@@ -39,7 +39,7 @@ public:
     FA(string);
 
     void display() const;
-    void Addstate();
+    void addState();
 
     bool complete();
     FA minimize();

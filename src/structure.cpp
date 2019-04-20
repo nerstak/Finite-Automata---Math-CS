@@ -55,3 +55,26 @@ void FA::display() const
         cout << endl;
     }
 }
+
+
+
+void FA::addState()
+{
+    State * St=new State;
+    char c;
+
+    cout << "State ID: ";
+    cin >> St->id;
+
+    cout << "Is state final (y/n): ";
+    cin >> c;
+    St->final= c=='y';
+
+    cout << "Is state initial (y/n): ";
+    cin >> c;
+    St->initial= c=='y';
+
+    //TODO add trransitions
+
+
+}
