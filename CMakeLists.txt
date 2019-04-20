@@ -3,7 +3,7 @@ project(Finite_Automata___Math_CS)
 
 set(CMAKE_CXX_STANDARD 14)
 
-FILE(GLOB_RECURSE SRC "src/*.c")
+FILE(GLOB_RECURSE SRC "src/*.cpp")
 FILE(GLOB_RECURSE HDR "src/*.h")
 
 set(MAIN main.cpp)
