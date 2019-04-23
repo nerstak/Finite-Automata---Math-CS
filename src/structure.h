@@ -3,46 +3,49 @@
 
 #include <iostream>
 #include <vector>
+
 using namespace std;
 
 // Outgoing transition from a State
-typedef struct Transition
-{
-    struct State * dest;
+typedef struct Transition {
+    struct State* dest;
     char trans;
-}Transition;
+} Transition;
 
 //Single automata State
-typedef struct State
-{
+typedef struct State {
     int id;       //Arbitrary state name          make this char?
     bool initial;   // true if this is an initial state
     bool final;     // true if this is a final state
     std::vector<Transition*> exits;      //list of outgoing transitions
-}State;
+} State;
 
 
-class FA
-{
+class FA {
 private:
     string name;           //Arbitrary name
     vector<State*> states;  //List of all the automaton's states
-    vector<char>  alphabet;
+    vector<char> alphabet;
 
-    //Shows if in its current state the automaton is minimized/determinized/complete
-    bool minimized;
-    bool determinized;
-    bool completed;
+    // Shows if in its current state the automaton is minimized/determinized/complete
+    bool minimized = false;
+    bool determinized = false;
+    bool completed = false;
 
 public:
     FA();
+
     FA(string);
 
     void display() const;
+
     void addState();
 
-    bool complete();
+    bool isComplete();
+
     FA minimize();
+
     FA determinize();
 };
+
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H
