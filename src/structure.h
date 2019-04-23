@@ -23,9 +23,9 @@ typedef struct State {
 
 class FA {
 private:
-    string name;           //Arbitrary name
-    vector<State*> states;  //List of all the automaton's states
-    vector<char> alphabet;
+    string _name;           //Arbitrary name
+    vector<State*> _states;  //List of all the automaton's states
+    vector<char> _alphabet;
 
     // Shows if in its current state the automaton is minimized/determinized/complete
     bool minimized = false;
@@ -37,9 +37,13 @@ public:
 
     FA(string);
 
+    void changeName(string name);
+
     void display() const;
 
     void addState();
+
+    void addCharacterToAlphabet(char c);
 
     bool isComplete();
 
@@ -47,5 +51,4 @@ public:
 
     FA determinize();
 };
-
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H
