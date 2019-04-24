@@ -60,14 +60,19 @@ void FA::addState(int ID) {
     State* St = new State;
     int x, st_size;
     char c, letter;
+    bool exists;
     Transition* newT = NULL;
 
+
+
+    //Asks for state ID if it wasn't already given
     if (ID == -1) {
         cout << "State ID: ";
         cin >> ID;
     }
     St->id = ID;
 
+    //sets if the FA is initial or final
     cout << "Is state " << St->id << " initial (y/n): ";
     cin >> c;
     St->initial = c == 'y';
@@ -77,17 +82,20 @@ void FA::addState(int ID) {
     cin >> c;
     St->final = c == 'y';
 
-
+    //adds generated state to full list
     states.push_back(St);
 
     do {
+        //display automata
         display();
+
         cout << "Add another transition from state " << St->id << " ? (y/n)";
         cin >> c;
         if (c == 'y') {
             cout << "Transition Character: ";
             cin >> letter;
 
+            //tries to find the transition character in the alphabet, if it does not exist, generate it
             if (find(alphabet.begin(), alphabet.end(), letter) == alphabet.end()) {
                 alphabet.push_back(letter);
             }
@@ -95,21 +103,31 @@ void FA::addState(int ID) {
             cout << "Transition destination state: ";
             cin >> x;
 
-
+            //Tries to find the destination state, if it does not exist, creates it
             if (findState(states, x) == NULL) {
                 cout << endl << "    This is a new transition, making a new state... " << endl << endl;
-
+                //recursion <3<3<3<3
                 addState(x);
             }
 
+            //creates a Transition and adds it to the list
             newT = new Transition;
 
             newT->trans = letter;
             newT->dest = findState(states, x);
 
+            //if the transition already exists, it does not add it
+            exists=false;
+            for(Transition* exitStates : St->exits){
+                if(exitStates->trans == newT->trans && exitStates->dest == newT->dest){
+                    exists=true;
+                    break;
+                }
+            }
 
-            St->exits.push_back(newT);
-            //TODO prevent duplicate transitions
+            if(!exists){
+                St->exits.push_back(newT);
+            }
         }
     } while (c == 'y');
 

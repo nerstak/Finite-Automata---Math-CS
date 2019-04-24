@@ -48,6 +48,10 @@ public:
     FA determinize();
 };
 
+/// Finds a specific state from its ID within a vector of states
+/// \param ListStates: the vector of states
+/// \param ID: the state int ID
+/// \return NULL if it doesnt exist or the address to the state
 State * findState(vector<State *> ListStates, int ID);
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H
