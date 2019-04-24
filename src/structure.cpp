@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "structure.h"
 #include <algorithm>
 
@@ -5,23 +6,28 @@ using namespace std;
 
 
 FA::FA(std::string FAname) {
-    name = FAname;
+    _name = FAname;
 }
 
 FA::FA() {
+}
 
+FA::FA(vector<State*> &states, vector<char> &alphabet) {
+    _states = states;
+    _alphabet = alphabet;
+    _name = "Finite Automata (from file)";
 }
 
 void FA::display() const {
-    int a_size = alphabet.size(), st_size = states.size(), t_size, i, c, j;
+    int a_size = _alphabet.size(), st_size = _states.size(), t_size, i, c, j;
 
     State* curSt;
 
     cout << endl << " - - - - - - - - - - - - - - - - - - - - - " << endl;
-    cout << "          FA: "<< name << endl << endl;
+    cout << "          FA: "<< _name << endl << endl;
     for (i = 0; i < st_size; i++) {
         //Displays each state ID and if it is I/F
-        curSt = states[i];
+        curSt = _states[i];
 
         cout << "State " << curSt->id << " :";
 
@@ -39,16 +45,18 @@ void FA::display() const {
 
         //Displays the transitions of a state from each letter in the alphabet
         for (c = 0; c < a_size; c++) {
-            cout << "    " << alphabet[c] << ": ";
+            cout << "    " << _alphabet[c] << ": ";
 
             for (j = 0; j < t_size; j++) {
-                if (curSt->exits[j]->trans == alphabet[c]) {
+                if (curSt->exits[j]->trans == _alphabet[c]) {
                     cout << curSt->exits[j]->dest->id << " ";
+
                 }
 
             }
             cout << endl;
         }
+
 
         cout << endl;
     }
@@ -83,7 +91,7 @@ void FA::addState(int ID) {
     St->final = c == 'y';
 
     //adds generated state to full list
-    states.push_back(St);
+    _states.push_back(St);
 
     do {
         //display automata
@@ -96,15 +104,15 @@ void FA::addState(int ID) {
             cin >> letter;
 
             //tries to find the transition character in the alphabet, if it does not exist, generate it
-            if (find(alphabet.begin(), alphabet.end(), letter) == alphabet.end()) {
-                alphabet.push_back(letter);
+            if (find(_alphabet.begin(), _alphabet.end(), letter) == _alphabet.end()) {
+                _alphabet.push_back(letter);
             }
 
             cout << "Transition destination state: ";
             cin >> x;
 
             //Tries to find the destination state, if it does not exist, creates it
-            if (findState(states, x) == NULL) {
+            if (findState(_states, x) == NULL) {
                 cout << endl << "    This is a new transition, making a new state... " << endl << endl;
                 //recursion <3<3<3<3
                 addState(x);
@@ -114,7 +122,7 @@ void FA::addState(int ID) {
             newT = new Transition;
 
             newT->trans = letter;
-            newT->dest = findState(states, x);
+            newT->dest = findState(_states, x);
 
             //if the transition already exists, it does not add it
             exists=false;
@@ -133,7 +141,6 @@ void FA::addState(int ID) {
 
 }
 
-
 State* findState(vector<State*> ListStates, int ID) {
     for (State* allstates: ListStates) {
         if (allstates->id == ID) {
@@ -141,4 +148,16 @@ State* findState(vector<State*> ListStates, int ID) {
         }
     }
     return NULL;
+}
+
+void FA::changeName(string name) {
+    _name = name;
+}
+
+vector<State*>::iterator State::searchById(vector<State*>* list, int id) {
+    vector<State*>::iterator it;
+    it = find_if(list->begin(), list->end(), [&id](State* st) -> bool {
+        return st->id == id;
+    });
+    return it;
 }

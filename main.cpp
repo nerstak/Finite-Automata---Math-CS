@@ -1,9 +1,11 @@
 #include <iostream>
-#include "src\structure.h"
+#include "src/structure.h"
+#include "src/files.h"
 
 int main() {
-    std::cout << "Henlo, World!" << std::endl;
     FA d;
     d.addState();
+    string lmao = "automata/test.txt";
+    readFile(lmao)->display();
     return 0;
 }
