@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "structure.h"
 
 using namespace std;
@@ -9,6 +10,13 @@ FA::FA(std::string FAname) {
 
 FA::FA() {
     _name = "Finite Automata";
+}
+
+FA::FA(vector<State*>* states, vector<char>* alphabet) {
+    _states = *states;
+    _alphabet = *alphabet;
+    _name = "Finite Automata (from file)";
+
 }
 
 void FA::display() const {
@@ -69,4 +77,12 @@ void FA::addState() {
 
 void FA::changeName(string name) {
     _name = name;
+}
+
+vector<State*>::iterator State::searchById(vector<State*>* list, int id) {
+    vector<State*>::iterator it;
+    it = find_if(list->begin(), list->end(), [&id](State* st) -> bool {
+        return st->id == id;
+    });
+    return it;
 }

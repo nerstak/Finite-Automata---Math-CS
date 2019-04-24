@@ -26,16 +26,21 @@ static int readUniqueNumber(ifstream &stream);
 /// Create states and relationship between all of them
 /// \param stream File stream (read)
 /// \return Address of vector of address of states
-static vector<State*>* createStates(ifstream &stream);
+static void createStates(ifstream &stream, vector<int>* initialStates, vector<int>* finalStates, vector<State*>* states,
+                         vector<char>* alpha);
 
 /// Check if the state exists, and if not, create it
 /// \param list List of address of states
-/// \param state ID (in char) of the state to add
-static void checkAndCreateSingleState(vector<State*>* list, char state);
+/// \param state ID (in int) of the state to add
+static void checkAndCreateSingleState(vector<State*>* list, int state, vector<int>* init, vector<int>* final);
 
 /// Allocate memory for a state
 /// \param c id of the state (char)
 /// \return Address of the state
-static State* allocateState(char c);
+static State* allocateState(int c);
+
+static void separateTransition(std::string &transitionString, char &c, int &stateFrom, int &stateTo);
+
+static void createTransition(vector<State*>* list, const int stateFromID, const int stateToID, const char transition);
 
 #endif //FINITE_AUTOMATA_MATH_CS_FILES_H

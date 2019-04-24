@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#define EMPTY '*'
+
 using namespace std;
 
 // Outgoing transition from a State
@@ -15,9 +17,11 @@ typedef struct Transition {
 //Single automata State
 typedef struct State {
     int id;       //Arbitrary state name          make this char?
-    bool initial;   // true if this is an initial state
-    bool final;     // true if this is a final state
+    bool initial = false;   // true if this is an initial state
+    bool final = false;     // true if this is a final state
     std::vector<Transition*> exits;      //list of outgoing transitions
+
+    static vector<State*>::iterator searchById(vector<State*>* list, int id);
 } State;
 
 
@@ -36,6 +40,8 @@ public:
     FA();
 
     FA(string);
+
+    FA(vector<State*>* states, vector<char>* alphabet);
 
     void changeName(string name);
 
