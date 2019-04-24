@@ -37,6 +37,8 @@ static FA* creatingFA(ifstream &stream) {
     delete (initStates);
     delete (finalStates);
 
+    // TODO: Add security and all that kind of stuff
+
     return newFA;
 }
 
@@ -116,14 +118,17 @@ static void separateTransition(string &transitionString, char &c, int &stateFrom
     string::iterator it = transitionString.begin();
     string stateF, stateT;
 
+    // First state
     while (isdigit(*it)) {
         stateF += *it;
         it++;
     }
+    // Character of transition
     while (isalpha(*it) || *it == EMPTY) {
         c = *it;
         it++;
     }
+    // Second state
     while (isdigit(*it)) {
         stateT += *it;
         it++;
@@ -133,6 +138,7 @@ static void separateTransition(string &transitionString, char &c, int &stateFrom
 }
 
 static void createTransition(vector<State*> &list, const int stateFromID, const int stateToID, const char transition) {
+    // Looking for address of the two states
     State* stateFrom = *State::searchById(&list, stateFromID);
     State* stateTo = *State::searchById(&list, stateToID);
 
@@ -143,6 +149,7 @@ static void createTransition(vector<State*> &list, const int stateFromID, const 
 }
 
 static void addCharacterToAlphabet(vector<char> &alpha, char c) {
+    // We add character to alphabet if not in or empty word
     if (find(alpha.begin(), alpha.end(), c) == alpha.end() && c != EMPTY) {
         alpha.push_back(c);
     }

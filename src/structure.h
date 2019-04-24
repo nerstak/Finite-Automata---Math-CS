@@ -21,6 +21,10 @@ typedef struct State {
     bool final = false;     // true if this is a final state
     std::vector<Transition*> exits;      //list of outgoing transitions
 
+    /// Search a state by ID
+    /// \param list Address of list of address of states
+    /// \param id ID of the state looked for
+    /// \return Iterator of the state (NO SAFEGUARD, deference IFF possible)
     static vector<State*>::iterator searchById(vector<State*>* list, int id);
 } State;
 
