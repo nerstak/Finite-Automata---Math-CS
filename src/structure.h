@@ -23,7 +23,7 @@ typedef struct State {
 
 class FA {
 private:
-    string name;           //Arbitrary name
+    string name="Finite automata";           //Arbitrary name
     vector<State*> states;  //List of all the automaton's states
     vector<char> alphabet;
 
@@ -39,7 +39,7 @@ public:
 
     void display() const;
 
-    void addState();
+    void addState(int= -1);
 
     bool isComplete();
 
@@ -47,5 +47,7 @@ public:
 
     FA determinize();
 };
+
+State * findState(vector<State *> ListStates, int ID);
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H

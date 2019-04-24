@@ -1,4 +1,5 @@
 #include "structure.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -8,34 +9,41 @@ FA::FA(std::string FAname) {
 }
 
 FA::FA() {
-    name = "Finite Automata";
+
 }
 
 void FA::display() const {
-    int a_size = alphabet.size(), t_size, i, c, j;
+    int a_size = alphabet.size(), st_size = states.size(), t_size, i, c, j;
 
-    for (i = 0; i < states.size(); i++) {
+    State* curSt;
+
+    cout << endl << " - - - - - - - - - - - - - - - - - - - - - " << endl;
+    cout << "          FA: "<< name << endl << endl;
+    for (i = 0; i < st_size; i++) {
         //Displays each state ID and if it is I/F
-        cout << "State " << i << " :";
+        curSt = states[i];
 
-        if (states[i]->initial) {
+        cout << "State " << curSt->id << " :";
+
+
+        t_size = curSt->exits.size();
+
+        if (curSt->initial) {
             cout << " Initial";
         }
-        if (states[i]->final) {
+        if (curSt->final) {
             cout << " Final";
         }
         cout << endl;
-
+        int a = 0;
 
         //Displays the transitions of a state from each letter in the alphabet
-        for (c = 0; c < a_size; c++);
-        {
+        for (c = 0; c < a_size; c++) {
             cout << "    " << alphabet[c] << ": ";
 
-            t_size = states[i]->exits.size();
             for (j = 0; j < t_size; j++) {
-                if (states[i]->exits[j]->trans == alphabet[c]) {
-                    cout << states[i]->exits[j]->dest->id << " ";  //TODO: yeah I'll make it clearer
+                if (curSt->exits[j]->trans == alphabet[c]) {
+                    cout << curSt->exits[j]->dest->id << " ";
                 }
 
             }
@@ -44,25 +52,75 @@ void FA::display() const {
 
         cout << endl;
     }
+    cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
 }
 
 
-void FA::addState() {
+void FA::addState(int ID) {
     State* St = new State;
-    char c;
+    int x, st_size;
+    char c, letter;
+    Transition* newT = NULL;
 
-    cout << "State ID: ";
-    cin >> St->id;
+    if (ID == -1) {
+        cout << "State ID: ";
+        cin >> ID;
+    }
+    St->id = ID;
 
-    cout << "Is state final (y/n): ";
-    cin >> c;
-    St->final = c == 'y';
-
-    cout << "Is state initial (y/n): ";
+    cout << "Is state " << St->id << " initial (y/n): ";
     cin >> c;
     St->initial = c == 'y';
 
-    //TODO add trransitions
+
+    cout << "Is state " << St->id << " final (y/n): ";
+    cin >> c;
+    St->final = c == 'y';
 
 
+    states.push_back(St);
+
+    do {
+        display();
+        cout << "Add another transition from state " << St->id << " ? (y/n)";
+        cin >> c;
+        if (c == 'y') {
+            cout << "Transition Character: ";
+            cin >> letter;
+
+            if (find(alphabet.begin(), alphabet.end(), letter) == alphabet.end()) {
+                alphabet.push_back(letter);
+            }
+
+            cout << "Transition destination state: ";
+            cin >> x;
+
+
+            if (findState(states, x) == NULL) {
+                cout << endl << "    This is a new transition, making a new state... " << endl << endl;
+
+                addState(x);
+            }
+
+            newT = new Transition;
+
+            newT->trans = letter;
+            newT->dest = findState(states, x);
+
+
+            St->exits.push_back(newT);
+            //TODO prevent duplicate transitions
+        }
+    } while (c == 'y');
+
+}
+
+
+State* findState(vector<State*> ListStates, int ID) {
+    for (State* allstates: ListStates) {
+        if (allstates->id == ID) {
+            return allstates;
+        }
+    }
+    return NULL;
 }
