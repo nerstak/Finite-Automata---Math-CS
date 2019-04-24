@@ -11,9 +11,10 @@ extern FA* readFile(string &nameFile) {
         return nullptr;
     }
 
-    creatingFA(inputStream);
+    FA* result = creatingFA(inputStream);
 
     inputStream.close();
+    return result;
 }
 
 static FA* creatingFA(ifstream &stream) {
@@ -21,6 +22,7 @@ static FA* creatingFA(ifstream &stream) {
     int alphabetSize{0}, numberStates{0}, numberTransitions{0};
     vector<int>* initStates, * finalStates;
     vector<State*> statesList;
+    vector<char> alphabet;
 
     alphabetSize = readUniqueNumber(stream);
     numberStates = readUniqueNumber(stream);
@@ -28,8 +30,14 @@ static FA* creatingFA(ifstream &stream) {
     finalStates = readSpecialStates(stream);
     numberTransitions = readUniqueNumber(stream);
 
-    createStates(stream, initStates, finalStates, &statesList, nullptr);
-    cout << "done";
+    createStates(stream, initStates, finalStates, statesList, alphabet);
+
+    FA* newFA = new FA(statesList, alphabet);
+
+    delete (initStates);
+    delete (finalStates);
+
+    return newFA;
 }
 
 static vector<int>* readSpecialStates(ifstream &stream) {
@@ -39,9 +47,11 @@ static vector<int>* readSpecialStates(ifstream &stream) {
     size_t pos = 0;
     getline(stream, line);
 
+    // Splitting instruction with ' '
     while ((pos = line.find(delimiter)) != string::npos) {
         newState = line.substr(0, pos);
         if (states->empty() && size == -1) {
+            // First number is for the size
             size = stoi(newState);
         } else {
             states->push_back(stoi(newState));
@@ -61,31 +71,37 @@ static int readUniqueNumber(ifstream &stream) {
     return stoi(line);
 }
 
-static void createStates(ifstream &stream, vector<int>* initialStates, vector<int>* finalStates, vector<State*>* states,
-                         vector<char>* alpha) {
+static void createStates(ifstream &stream, vector<int>* initialStates, vector<int>* finalStates, vector<State*> &states,
+                         vector<char> &alpha) {
     string line;
-    // vector<State*>* states = new vector<State*>;
     while (getline(stream, line)) {
         char c;
         int stateFrom, stateTo;
+        // Splitting the instruction into 3 parts
         separateTransition(line, c, stateFrom, stateTo);
 
+        // Recovering or creating states of the transition
         checkAndCreateSingleState(states, stateFrom, initialStates, finalStates);
         checkAndCreateSingleState(states, stateTo, initialStates, finalStates);
+
         createTransition(states, stateFrom, stateTo, c);
+
+        addCharacterToAlphabet(alpha, c);
     }
 }
 
-static void checkAndCreateSingleState(vector<State*>* list, int state, vector<int>* init, vector<int>* final) {
-    auto it = State::searchById(list, state);
+static void checkAndCreateSingleState(vector<State*> &list, int state, vector<int>* init, vector<int>* final) {
+    auto it = State::searchById(&list, state);
 
-    if (it == list->end()) {
-        list->push_back(allocateState(state));
+    if (it == list.end()) {
+        list.push_back(allocateState(state));
+
+        // Checking if the created state is special
         if (find(init->begin(), init->end(), state) != init->end()) {
-            list->back()->initial = true;
+            list.back()->initial = true;
         }
         if (find(final->begin(), final->end(), state) != final->end()) {
-            list->back()->final = true;
+            list.back()->final = true;
         }
     }
 }
@@ -93,7 +109,6 @@ static void checkAndCreateSingleState(vector<State*>* list, int state, vector<in
 static State* allocateState(int c) {
     State* st = new State();
     st->id = c;
-    //st->exits = new vector<Transition*>;
     return st;
 }
 
@@ -117,12 +132,18 @@ static void separateTransition(string &transitionString, char &c, int &stateFrom
     stateTo = stoi(stateT);
 }
 
-static void createTransition(vector<State*>* list, const int stateFromID, const int stateToID, const char transition) {
-    State* stateFrom = *State::searchById(list, stateFromID);
-    State* stateTo = *State::searchById(list, stateToID);
+static void createTransition(vector<State*> &list, const int stateFromID, const int stateToID, const char transition) {
+    State* stateFrom = *State::searchById(&list, stateFromID);
+    State* stateTo = *State::searchById(&list, stateToID);
 
     Transition* t = new Transition;
     t->trans = transition;
     t->dest = stateTo;
     stateFrom->exits.push_back(t);
+}
+
+static void addCharacterToAlphabet(vector<char> &alpha, char c) {
+    if (find(alpha.begin(), alpha.end(), c) == alpha.end() && c != EMPTY) {
+        alpha.push_back(c);
+    }
 }

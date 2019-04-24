@@ -5,6 +5,6 @@
 int main() {
     std::cout << "Henlo, World!" << std::endl;
     string lmao = "automata/test.txt";
-    readFile(lmao);
+    readFile(lmao)->display();
     return 0;
 }

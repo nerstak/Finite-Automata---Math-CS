@@ -12,19 +12,20 @@ FA::FA() {
     _name = "Finite Automata";
 }
 
-FA::FA(vector<State*>* states, vector<char>* alphabet) {
-    _states = *states;
-    _alphabet = *alphabet;
+FA::FA(vector<State*> &states, vector<char> &alphabet) {
+    _states = states;
+    _alphabet = alphabet;
     _name = "Finite Automata (from file)";
 
 }
 
 void FA::display() const {
+    cout << _alphabet[0];
     int a_size = _alphabet.size(), t_size, i, c, j;
 
     for (i = 0; i < _states.size(); i++) {
         //Displays each state ID and if it is I/F
-        cout << "State " << i << " :";
+        cout << "State " << _states[i]->id << " :";
 
         if (_states[i]->initial) {
             cout << " Initial";
@@ -36,9 +37,9 @@ void FA::display() const {
 
 
         //Displays the transitions of a state from each letter in the _alphabet
-        for (c = 0; c < a_size; c++);
+        for (c = 0; c < a_size; c++)
         {
-            cout << "    " << _alphabet[c] << ": ";
+            cout << "    Char " << _alphabet[c] << ": ";
 
             t_size = _states[i]->exits.size();
             for (j = 0; j < t_size; j++) {
@@ -49,6 +50,7 @@ void FA::display() const {
             }
             cout << endl;
         }
+
 
         cout << endl;
     }

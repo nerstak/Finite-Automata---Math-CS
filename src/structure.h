@@ -41,7 +41,7 @@ public:
 
     FA(string);
 
-    FA(vector<State*>* states, vector<char>* alphabet);
+    FA(vector<State*> &states, vector<char> &alphabet);
 
     void changeName(string name);
 
