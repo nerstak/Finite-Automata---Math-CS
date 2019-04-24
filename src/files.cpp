@@ -32,14 +32,20 @@ static FA* creatingFA(ifstream &stream) {
 
     createStates(stream, initStates, finalStates, statesList, alphabet);
 
-    FA* newFA = new FA(statesList, alphabet);
+    bool alphaNB = alphabetSize == alphabet.size();
+    bool numberST = numberStates == statesList.size();
+    bool numberTR = countTransitions(statesList) == numberTransitions;
 
     delete (initStates);
     delete (finalStates);
 
-    // TODO: Add security and all that kind of stuff
+    if (alphaNB && numberST && numberTR) {
+        FA* newFA = new FA(statesList, alphabet);
+        return newFA;
+    } else {
+        return nullptr;
+    }
 
-    return newFA;
 }
 
 static vector<int>* readSpecialStates(ifstream &stream) {
@@ -153,4 +159,10 @@ static void addCharacterToAlphabet(vector<char> &alpha, char c) {
     if (find(alpha.begin(), alpha.end(), c) == alpha.end() && c != EMPTY) {
         alpha.push_back(c);
     }
+}
+
+static int countTransitions(vector<State*> &list) {
+    int count{0};
+    for_each(list.begin(), list.end(), [&count](State* st) -> void { count += st->exits.size(); });
+    return count;
 }

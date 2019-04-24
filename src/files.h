@@ -55,11 +55,16 @@ static void separateTransition(std::string &transitionString, char &c, int &stat
 /// \param stateFromID ID of the initial state of transition
 /// \param stateToID ID of the final state of transition
 /// \param transition Character of transition
-static void createTransition(vector<State*> &list, const int stateFromID, const int stateToID, const char transition);
+static void createTransition(vector<State*> &list, int stateFromID, int stateToID, char transition);
 
 /// Add a character to an alphabet if not in
 /// \param alpha Reference to a vector of char (alphabet)
 /// \param c Character to add
 static void addCharacterToAlphabet(vector<char> &alpha, char c);
+
+/// Count the number of transition from the list of state
+/// \param list Reference of a vector of address of State
+/// \return Number of transition
+static int countTransitions(vector<State*> &list);
 
 #endif //FINITE_AUTOMATA_MATH_CS_FILES_H

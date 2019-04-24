@@ -37,8 +37,7 @@ void FA::display() const {
 
 
         //Displays the transitions of a state from each letter in the _alphabet
-        for (c = 0; c < a_size; c++)
-        {
+        for (c = 0; c < a_size; c++) {
             cout << "    Char " << _alphabet[c] << ": ";
 
             t_size = _states[i]->exits.size();
