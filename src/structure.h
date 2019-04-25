@@ -25,7 +25,23 @@ typedef struct State {
     /// \param list List of states to look in
     /// \param id ID of the state looked for
     /// \return Address of the state if found, nullptr if not
-    static State* searchById(vector<State*>* list, string id);
+    static State* searchById(vector<State*> &list, string id);
+
+    /// Search if any initial states in list
+    /// \param list List of states
+    /// \return true if any, false if none
+    static bool isAnyInitial(const vector<State*> &list);
+
+    /// Search if any final states in list
+    /// \param list List of states
+    /// \return true if any, false if none
+    static bool isAnyFinal(const vector<State*> &list);
+
+    /// Recover initial and final states from a list
+    /// \param list List of states
+    /// \param initials List where initial states will be
+    /// \param finals List where final states will be
+    static void recoverSpecials(const vector<State*> &list, vector<State*> &initials, vector<State*> &finals);
 } State;
 
 
@@ -61,6 +77,13 @@ public:
 
     FA determinize();
 
+public: // Will be private
+    FA* determinization_Sync();
 };
+
+/// Generate an ID from a list of states
+/// \param sameStates List of states
+/// \return ID generated
+extern string concatenateID(vector<State*> &sameStates);
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H

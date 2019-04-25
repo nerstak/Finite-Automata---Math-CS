@@ -111,7 +111,7 @@ void FA::addState(string ID) {
             cin >> x;
 
             //Tries to find the destination state, if it does not exist, creates it
-            if (State::searchById(&_states, x) == nullptr) {
+            if (State::searchById(_states, x) == nullptr) {
                 cout << endl << "    This is a new transition, making a new state... " << endl << endl;
                 //recursion <3<3<3<3
                 addState(x);
@@ -121,7 +121,7 @@ void FA::addState(string ID) {
             newT = new Transition;
 
             newT->trans = letter;
-            newT->dest = State::searchById(&_states, x);
+            newT->dest = State::searchById(_states, x);
 
             //if the transition already exists, it does not add it
             exists = false;
@@ -145,13 +145,53 @@ void FA::changeName(string name) {
 }
 
 
-State* State::searchById(vector<State*>* list, string id) {
+State* State::searchById(vector<State*> &list, string id) {
     vector<State*>::iterator it;
-    it = find_if(list->begin(), list->end(), [&id](State* st) -> bool {
+    it = find_if(list.begin(), list.end(), [&id](State* st) -> bool {
         return st->id == id;
     });
-    if (it != list->end()) {
+    if (it != list.end()) {
         return *it;
     }
     return nullptr;
+}
+
+
+bool State::isAnyInitial(const vector<State*> &list) {
+    for (State* st: list) {
+        if (st->initial) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool State::isAnyFinal(const vector<State*> &list) {
+    for (State* st: list) {
+        if (st->final) {
+            return true;
+        }
+    }
+    return false;
+}
+
+extern string concatenateID(vector<State*> &sameStates) {
+    sort(sameStates.begin(), sameStates.end(),
+         [](const State* st1, const State* st2) -> bool { return stoi(st1->id) < stoi(st2->id); });
+    string newID;
+    for (State* st: sameStates) {
+        newID += st->id;
+    }
+    return newID;
+}
+
+void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials, vector<State*> &finals) {
+    for (State* st: list) {
+        if (st->initial) {
+            initials.push_back(st);
+        }
+        if (st->final) {
+            finals.push_back(st);
+        }
+    }
 }

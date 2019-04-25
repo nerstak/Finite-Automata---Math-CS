@@ -61,7 +61,7 @@ static vector<string>* readSpecialStates(ifstream &stream) {
         if (states->empty() && size == -1) {
             // First number is for the size
             size = stoi(newState);
-        } else {
+        } else if (newState != delimiter && newState != "") {
             states->push_back(newState);
         }
         line.erase(0, pos + delimiter.length());
@@ -100,7 +100,7 @@ static void createStates(ifstream &stream, vector<string>* initialStates, vector
 }
 
 static void checkAndCreateSingleState(vector<State*> &list, string state, vector<string>* init, vector<string>* final) {
-    auto it = State::searchById(&list, state);
+    auto it = State::searchById(list, state);
 
     if (it == nullptr) {
         list.push_back(allocateState(state));
@@ -145,8 +145,8 @@ static void separateTransition(string &transitionString, char &c, string &stateF
 static void createTransition(vector<State*> &list, const string stateFromID, const string stateToID,
                              const char transition) {
     // Looking for address of the two states
-    State* stateFrom = State::searchById(&list, stateFromID);
-    State* stateTo = State::searchById(&list, stateToID);
+    State* stateFrom = State::searchById(list, stateFromID);
+    State* stateTo = State::searchById(list, stateToID);
 
     Transition* t = new Transition;
     t->trans = transition;

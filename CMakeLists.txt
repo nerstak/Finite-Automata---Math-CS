@@ -7,13 +7,13 @@ set(SRC
         main.cpp
         src/structure.cpp
         src/files.cpp
-        )
+        src/determinization.cpp)
 
 # List of h files
 set(HDR
         src/structure.h
         src/files.h
-        )
+        src/determinization.h)
 set(MAIN main.cpp)
 
 set(CMAKE_CXX_STANDARD 14) # Version of C++
