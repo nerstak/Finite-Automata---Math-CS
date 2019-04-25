@@ -17,6 +17,15 @@ FA::FA(vector<State*> &states, vector<char> &alphabet) {
     _name = "Finite Automata (from file)";
 }
 
+FA::~FA() {
+    for (State* st: _states) {
+        for (Transition* t: st->exits) {
+            delete (t);
+        }
+        delete (st);
+    }
+}
+
 void FA::display() const {
     int a_size = _alphabet.size(), st_size = _states.size(), t_size, i, c, j;
 

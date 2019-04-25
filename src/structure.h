@@ -47,6 +47,8 @@ public:
 
     FA(vector<State*> &states, vector<char> &alphabet);
 
+    ~FA();
+
     void changeName(string name);
 
     void display() const;
