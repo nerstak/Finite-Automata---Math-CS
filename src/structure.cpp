@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "structure.h"
-#include <algorithm>
 
 using namespace std;
 
@@ -24,7 +23,7 @@ void FA::display() const {
     State* curSt;
 
     cout << endl << " - - - - - - - - - - - - - - - - - - - - - " << endl;
-    cout << "          FA: "<< _name << endl << endl;
+    cout << "          FA: " << _name << endl << endl;
     for (i = 0; i < st_size; i++) {
         //Displays each state ID and if it is I/F
         curSt = _states[i];
@@ -41,7 +40,6 @@ void FA::display() const {
             cout << " Final";
         }
         cout << endl;
-        int a = 0;
 
         //Displays the transitions of a state from each letter in the alphabet
         for (c = 0; c < a_size; c++) {
@@ -64,17 +62,18 @@ void FA::display() const {
 }
 
 
-void FA::addState(int ID) {
+void FA::addState(string ID) {
     State* St = new State;
-    int x, st_size;
+    string
+    x;
     char c, letter;
     bool exists;
-    Transition* newT = NULL;
+    Transition* newT = nullptr;
 
 
 
     //Asks for state ID if it wasn't already given
-    if (ID == -1) {
+    if (ID == "-1") {
         cout << "State ID: ";
         cin >> ID;
     }
@@ -112,7 +111,7 @@ void FA::addState(int ID) {
             cin >> x;
 
             //Tries to find the destination state, if it does not exist, creates it
-            if (findState(_states, x) == NULL) {
+            if (State::searchById(&_states, x) == nullptr) {
                 cout << endl << "    This is a new transition, making a new state... " << endl << endl;
                 //recursion <3<3<3<3
                 addState(x);
@@ -122,18 +121,18 @@ void FA::addState(int ID) {
             newT = new Transition;
 
             newT->trans = letter;
-            newT->dest = findState(_states, x);
+            newT->dest = State::searchById(&_states, x);
 
             //if the transition already exists, it does not add it
-            exists=false;
-            for(Transition* exitStates : St->exits){
-                if(exitStates->trans == newT->trans && exitStates->dest == newT->dest){
-                    exists=true;
+            exists = false;
+            for (Transition* exitStates : St->exits) {
+                if (exitStates->trans == newT->trans && exitStates->dest == newT->dest) {
+                    exists = true;
                     break;
                 }
             }
 
-            if(!exists){
+            if (!exists) {
                 St->exits.push_back(newT);
             }
         }
@@ -141,23 +140,18 @@ void FA::addState(int ID) {
 
 }
 
-State* findState(vector<State*> ListStates, int ID) {
-    for (State* allstates: ListStates) {
-        if (allstates->id == ID) {
-            return allstates;
-        }
-    }
-    return NULL;
-}
-
 void FA::changeName(string name) {
     _name = name;
 }
 
-vector<State*>::iterator State::searchById(vector<State*>* list, int id) {
+
+State* State::searchById(vector<State*>* list, string id) {
     vector<State*>::iterator it;
     it = find_if(list->begin(), list->end(), [&id](State* st) -> bool {
         return st->id == id;
     });
-    return it;
+    if (it != list->end()) {
+        return *it;
+    }
+    return nullptr;
 }

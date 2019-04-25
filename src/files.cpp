@@ -20,7 +20,7 @@ extern FA* readFile(string &nameFile) {
 static FA* creatingFA(ifstream &stream) {
     string line;
     int alphabetSize{0}, numberStates{0}, numberTransitions{0};
-    vector<int>* initStates, * finalStates;
+    vector<string>* initStates, * finalStates;
     vector<State*> statesList;
     vector<char> alphabet;
 
@@ -48,8 +48,8 @@ static FA* creatingFA(ifstream &stream) {
 
 }
 
-static vector<int>* readSpecialStates(ifstream &stream) {
-    vector<int>* states = new vector<int>;
+static vector<string>* readSpecialStates(ifstream &stream) {
+    vector<string>* states = new vector<string>;
     string line, newState, delimiter = " ";
     int size{-1};
     size_t pos = 0;
@@ -62,7 +62,7 @@ static vector<int>* readSpecialStates(ifstream &stream) {
             // First number is for the size
             size = stoi(newState);
         } else {
-            states->push_back(stoi(newState));
+            states->push_back(newState);
         }
         line.erase(0, pos + delimiter.length());
     }
@@ -79,12 +79,13 @@ static int readUniqueNumber(ifstream &stream) {
     return stoi(line);
 }
 
-static void createStates(ifstream &stream, vector<int>* initialStates, vector<int>* finalStates, vector<State*> &states,
+static void createStates(ifstream &stream, vector<string>* initialStates, vector<string>* finalStates,
+                         vector<State*> &states,
                          vector<char> &alpha) {
     string line;
     while (getline(stream, line)) {
         char c;
-        int stateFrom, stateTo;
+        string stateFrom, stateTo;
         // Splitting the instruction into 3 parts
         separateTransition(line, c, stateFrom, stateTo);
 
@@ -98,10 +99,10 @@ static void createStates(ifstream &stream, vector<int>* initialStates, vector<in
     }
 }
 
-static void checkAndCreateSingleState(vector<State*> &list, int state, vector<int>* init, vector<int>* final) {
+static void checkAndCreateSingleState(vector<State*> &list, string state, vector<string>* init, vector<string>* final) {
     auto it = State::searchById(&list, state);
 
-    if (it == list.end()) {
+    if (it == nullptr) {
         list.push_back(allocateState(state));
 
         // Checking if the created state is special
@@ -114,19 +115,19 @@ static void checkAndCreateSingleState(vector<State*> &list, int state, vector<in
     }
 }
 
-static State* allocateState(int c) {
+static State* allocateState(string id) {
     State* st = new State();
-    st->id = c;
+    st->id = id;
     return st;
 }
 
-static void separateTransition(string &transitionString, char &c, int &stateFrom, int &stateTo) {
+static void separateTransition(string &transitionString, char &c, string &stateFrom, string &stateTo) {
     string::iterator it = transitionString.begin();
     string stateF, stateT;
 
     // First state
     while (isdigit(*it)) {
-        stateF += *it;
+        stateFrom += *it;
         it++;
     }
     // Character of transition
@@ -136,17 +137,16 @@ static void separateTransition(string &transitionString, char &c, int &stateFrom
     }
     // Second state
     while (isdigit(*it)) {
-        stateT += *it;
+        stateTo += *it;
         it++;
     }
-    stateFrom = stoi(stateF);
-    stateTo = stoi(stateT);
 }
 
-static void createTransition(vector<State*> &list, const int stateFromID, const int stateToID, const char transition) {
+static void createTransition(vector<State*> &list, const string stateFromID, const string stateToID,
+                             const char transition) {
     // Looking for address of the two states
-    State* stateFrom = *State::searchById(&list, stateFromID);
-    State* stateTo = *State::searchById(&list, stateToID);
+    State* stateFrom = State::searchById(&list, stateFromID);
+    State* stateTo = State::searchById(&list, stateToID);
 
     Transition* t = new Transition;
     t->trans = transition;

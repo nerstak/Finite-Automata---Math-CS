@@ -16,22 +16,22 @@ typedef struct Transition {
 
 //Single automata State
 typedef struct State {
-    int id;       //Arbitrary state name          make this char?
+    string id;       //Arbitrary state name
     bool initial = false;   // true if this is an initial state
     bool final = false;     // true if this is a final state
     std::vector<Transition*> exits;      //list of outgoing transitions
 
     /// Search a state by ID
-    /// \param list Address of list of address of states
+    /// \param list List of states to look in
     /// \param id ID of the state looked for
-    /// \return Iterator of the state (NO SAFEGUARD, deference IFF possible)
-    static vector<State*>::iterator searchById(vector<State*>* list, int id);
+    /// \return Address of the state if found, nullptr if not
+    static State* searchById(vector<State*>* list, string id);
 } State;
 
 
 class FA {
 private:
-    string _name="Finite automata";           //Arbitrary name
+    string _name = "Finite automata";           //Arbitrary name
     vector<State*> _states;  //List of all the automaton's states
     vector<char> _alphabet;
 
@@ -51,7 +51,7 @@ public:
 
     void display() const;
 
-    void addState(int= -1);
+    void addState(string = "-1");
 
     void addCharacterToAlphabet(char c);
 
@@ -60,12 +60,7 @@ public:
     FA minimize();
 
     FA determinize();
-};
 
-/// Finds a specific state from its ID within a vector of states
-/// \param ListStates: the vector of states
-/// \param ID: the state int ID
-/// \return NULL if it doesnt exist or the address to the state
-State * findState(vector<State *> ListStates, int ID);
+};
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H
