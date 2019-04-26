@@ -6,11 +6,7 @@ determinizationProcess_Sync(vector<State*> &presentStates, vector<char> alphabet
                             vector<State*> &init, vector<State*> &fin) {
     // Naming the new state
     string newID;
-    if (sameStates.empty()) {
-        newID = "P";
-    } else {
-        newID = concatenateID(sameStates);
-    }
+    newID = concatenateID(sameStates);
 
     // Checking if the state isn't already existing
     auto search = State::searchById(presentStates, newID);
@@ -30,20 +26,22 @@ determinizationProcess_Sync(vector<State*> &presentStates, vector<char> alphabet
         vector<State*> sameFinalState;
         for (State* st: sameStates) {
             for (Transition* tr: st->exits) {
-                if (tr->trans == c &&
-                    find_if(sameFinalState.begin(), sameFinalState.end(), [tr](const State* s) -> bool {
-                        return s == tr->dest;
-                    }) == sameFinalState.end()) {
+                bool isNotPresent = find_if(sameFinalState.begin(), sameFinalState.end(), [tr](const State* s) -> bool {
+                    return s == tr->dest;
+                }) == sameFinalState.end();
+                if (tr->trans == c && isNotPresent) {
                     // We add the element if it is not already on the list and if the transition character correspond
                     sameFinalState.push_back(tr->dest);
                 }
             }
         }
         // Creating the transition, with the character and the address of the terminal state
-        Transition* tr = new Transition;
-        tr->trans = c;
-        tr->dest = determinizationProcess_Sync(presentStates, alphabet, sameFinalState, init, fin);
-        actual->exits.push_back(tr);
+        if (!sameFinalState.empty()) {
+            Transition* tr = new Transition;
+            tr->trans = c;
+            tr->dest = determinizationProcess_Sync(presentStates, alphabet, sameFinalState, init, fin);
+            actual->exits.push_back(tr);
+        }
     }
     return actual;
 }
