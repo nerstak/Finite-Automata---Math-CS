@@ -12,6 +12,12 @@ using namespace std;
 typedef struct Transition {
     struct State* dest;
     char trans;
+
+    /// Search transition having the specified character
+    /// \param list List of Transition to look in
+    /// \param c Character of transition to look for
+    /// \return First occurrence, nullptr if none
+    static Transition* searchByCharacter(vector<Transition*> &list, char c);
 } Transition;
 
 //Single automata State
@@ -62,7 +68,7 @@ public:
 
     /// Creating FA from a file
     /// \param nameFile Path and name of the file
-    FA(std::string nameFile);
+    explicit FA(std::string nameFile);
 
     /// Creating FA from existing states and alphabet
     /// \param states Vector of states
@@ -73,7 +79,7 @@ public:
     /// \param toCopy FA to copy from
     FA(FA &toCopy);
 
-    void changeName(string name);
+    void changeName(const string &name);
 
     void display() const;
 
@@ -100,11 +106,15 @@ private:
     /// \param toCopyStates States of the FA to copy from
     /// \param newID ID of the state to create
     /// \return Address of the state (used only for recursion)
-    State* copyStatesProcess(std::vector<State*> &toCopyStates, string newID);
+    State* copyStatesProcess(std::vector<State*> &toCopyStates, const string &newID);
 
-    /// Process of determinization of an Automate
+    /// Process of determinization of a Sync Automate
     /// \return Address of the determinized automate
     FA* determinization_Sync();
+
+    /// Process of determinization of an Async Automate
+    /// \return Address of the determinized automate
+    FA* determinization_Async();
 
     /// Check if the automate is synchronous or not. Should be used after every change in the automate
     void checkSynchronous();
@@ -113,6 +123,6 @@ private:
 /// Generate an ID from a list of states
 /// \param sameStates List of states
 /// \return ID generated
-extern string concatenateID(vector<State*> &sameStates);
+extern string concatenateID(vector<State*> sameStates);
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H

@@ -20,7 +20,7 @@ FA::FA(FA &toCopy) {
     }
 }
 
-State* FA::copyStatesProcess(std::vector<State*> &toCopyStates, string newID) {
+State* FA::copyStatesProcess(std::vector<State*> &toCopyStates, const string &newID) {
     // Checking if the state isn't already existing
     auto search = State::searchById(_states, newID);
     if (search != nullptr) {
@@ -87,6 +87,16 @@ void FA::display() const {
             }
             cout << endl;
         }
+
+        // Empty stuff (yep nasty for the moment)
+        cout << "    " << EMPTY << ": ";
+        for (j = 0; j < t_size; j++) {
+            if (curSt->exits[j]->trans == EMPTY) {
+                cout << curSt->exits[j]->dest->id << " ";
+
+            }
+        }
+        cout << endl;
 
 
         cout << endl;
@@ -173,10 +183,20 @@ void FA::addState(string ID) {
 
 }
 
-void FA::changeName(string name) {
+void FA::changeName(const string &name) {
     _name = name;
 }
 
+Transition* Transition::searchByCharacter(vector<Transition*> &list, char c) {
+    vector<Transition*>::iterator it;
+    it = find_if(list.begin(), list.end(), [&c](Transition* tr) -> bool {
+        return tr->trans == c;
+    });
+    if (it != list.end()) {
+        return *it;
+    }
+    return nullptr;
+}
 
 State* State::searchById(vector<State*> &list, string id) {
     vector<State*>::iterator it;
@@ -208,11 +228,12 @@ bool State::isAnyFinal(const vector<State*> &list) {
     return false;
 }
 
-extern string concatenateID(vector<State*> &sameStates) {
+extern string concatenateID(vector<State*> sameStates) {
     sort(sameStates.begin(), sameStates.end(),
          [](const State* st1, const State* st2) -> bool { return stoi(st1->id) < stoi(st2->id); });
     string newID;
     for (State* st: sameStates) {
+        if (!newID.empty()) { newID += "."; }
         newID += st->id;
     }
     return newID;
@@ -230,6 +251,7 @@ void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials
 }
 
 bool FA::isSynchronous() const {
+    // Todo: Explain why
     return _synchronous;
 }
 

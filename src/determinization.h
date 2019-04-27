@@ -3,15 +3,44 @@
 
 #include "structure.h"
 
-/// Determinization for a state
-/// \param presentStates List of states, where states of the new automate will be
-/// \param alphabet Alphabet (to give)
+/// Determinization for a state in synchronous automate
+/// \param presentStates List of states, where states of the new automate will be (return by parameter)
+/// \param alphabet Alphabet
 /// \param sameStates States sharing the same character of transition. At first, put the initial states
-/// \param init List of initial states (to give)
-/// \param fin List of final states (to give)
+/// \param init List of initial states
+/// \param fin List of final states
 /// \return Address of the state determinized (only used for recursion)
 static State*
-determinizationProcess_Sync(vector<State*> &presentStates, vector<char> alphabet, vector<State*> sameStates,
-                            vector<State*> &init, vector<State*> &fin);
+determinizationProcess_Sync(vector<State*> &presentStates, const vector<char> &alphabet,
+                            const vector<State*> &sameStates,
+                            const vector<State*> &init, const vector<State*> &fin);
+
+/// Determinization for a state in asynchronous automate
+/// \param presentStates List of states, where states of the new automate will be (return by parameter)
+/// \param alphabet Alphabet
+/// \param sameStates States sharing the same character of transition. At first, put the initial states
+/// \param init List of initial states
+/// \param fin List of final states
+/// \return Address of the state determinized (only used for recursion)
+static State*
+determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &alphabet,
+                             const vector<State*> &sameStates,
+                             const vector<State*> &init, const vector<State*> &fin);
+
+/// Initialise a state
+/// \param presentStates List of actual states (return by parameter)
+/// \param sameStates States that will be merged
+/// \param init List of initial states
+/// \param newID ID of the new state
+/// \return Address of the new state
+static State*
+initStateDet(vector<State*> &presentStates, const vector<State*> &sameStates, const vector<State*> &init,
+             const string &newID);
+
+/// Recover states having the same character of transition in a list given
+/// \param sameFinalState List of state sharing the same character of transition (return by parameter)
+/// \param sameStates List of states to look in
+/// \param c Character of transition
+static void locatingSameTransition(vector<State*> &sameFinalState, const vector<State*> &sameStates, char c);
 
 #endif //FINITE_AUTOMATA_MATH_CS_DETERMINIZATION_H
