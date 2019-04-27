@@ -3,12 +3,45 @@
 
 using namespace std;
 
-
-FA::FA(std::string FAname) {
-    _name = FAname;
+FA::FA() {
 }
 
-FA::FA() {
+FA::FA(FA &toCopy) {
+    _alphabet = toCopy._alphabet;
+    _synchronous = toCopy._synchronous;
+    _minimized = toCopy._minimized;
+    _completed = toCopy._completed;
+
+    vector<State*> init, final;
+    State::recoverSpecials(toCopy._states, init, final);
+
+    for (State* st: init) {
+        copyStatesProcess(toCopy._states, st->id);
+    }
+}
+
+State* FA::copyStatesProcess(std::vector<State*> &toCopyStates, string newID) {
+    // Checking if the state isn't already existing
+    auto search = State::searchById(_states, newID);
+    if (search != nullptr) {
+        return search;
+    }
+
+    auto old = State::searchById(toCopyStates, newID);
+    // Creating the state
+    State* actual = new State;
+    actual->id = newID;
+    actual->initial = old->initial;
+    actual->final = old->final;
+    _states.push_back(actual);
+
+    for (Transition* t: old->exits) {
+        Transition* tr = new Transition;
+        tr->trans = t->trans;
+        tr->dest = copyStatesProcess(toCopyStates, t->dest->id);
+        actual->exits.push_back(tr);
+    }
+    return actual;
 }
 
 FA::FA(vector<State*> &states, vector<char> &alphabet) {
@@ -194,4 +227,23 @@ void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials
             finals.push_back(st);
         }
     }
+}
+
+bool FA::isSynchronous() const {
+    return _synchronous;
+}
+
+void FA::checkSynchronous() {
+    bool sync = true;
+    for (State* st: _states) {
+        for (Transition* tr: st->exits) {
+            if (tr->trans == EMPTY) {
+                sync = false;
+                // Note: We use a goto to escape the loop as soon as we found an Empty Closure, which is enough to qualify the FA of asynchronous
+                goto exit;
+            }
+        }
+    }
+    exit:
+    _synchronous = sync;
 }

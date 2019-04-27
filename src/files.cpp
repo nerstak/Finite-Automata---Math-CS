@@ -4,25 +4,24 @@
 
 using namespace std;
 
-extern FA* readFile(string &nameFile) {
+FA::FA(string nameFile) {
     ifstream inputStream(nameFile);
 
-    if (!inputStream) {
-        return nullptr;
+    if (inputStream) {
+        creatingFAFile(inputStream);
+
+        checkSynchronous();
+
+        inputStream.close();
     }
 
-    FA* result = creatingFA(inputStream);
 
-    inputStream.close();
-    return result;
 }
 
-static FA* creatingFA(ifstream &stream) {
+void FA::creatingFAFile(ifstream &stream) {
     string line;
     int alphabetSize{0}, numberStates{0}, numberTransitions{0};
     vector<string>* initStates, * finalStates;
-    vector<State*> statesList;
-    vector<char> alphabet;
 
     alphabetSize = readUniqueNumber(stream);
     numberStates = readUniqueNumber(stream);
@@ -30,22 +29,19 @@ static FA* creatingFA(ifstream &stream) {
     finalStates = readSpecialStates(stream);
     numberTransitions = readUniqueNumber(stream);
 
-    createStates(stream, initStates, finalStates, statesList, alphabet);
+    createStates(stream, initStates, finalStates, _states, _alphabet);
 
-    bool alphaNB = alphabetSize == alphabet.size();
-    bool numberST = numberStates == statesList.size();
-    bool numberTR = countTransitions(statesList) == numberTransitions;
+    bool alphaNB = alphabetSize == _alphabet.size();
+    bool numberST = numberStates == _states.size();
+    bool numberTR = countTransitions(_states) == numberTransitions;
 
     delete (initStates);
     delete (finalStates);
 
-    if (alphaNB && numberST && numberTR) {
-        FA* newFA = new FA(statesList, alphabet);
-        return newFA;
-    } else {
-        return nullptr;
+    if (!(alphaNB && numberST && numberTR)) {
+        _states.clear();
+        _alphabet.clear();
     }
-
 }
 
 static vector<string>* readSpecialStates(ifstream &stream) {

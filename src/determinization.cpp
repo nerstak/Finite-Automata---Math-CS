@@ -63,3 +63,12 @@ FA* FA::determinization_Sync() {
     determinized->_determinized = true;
     return determinized;
 }
+
+FA* FA::determinize() {
+    if (_synchronous) {
+        return determinization_Sync();
+    } else {
+        // Should return the pointer of the async determinized
+        return nullptr;
+    }
+}
