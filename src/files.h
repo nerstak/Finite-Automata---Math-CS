@@ -1,7 +1,7 @@
 #ifndef FINITE_AUTOMATA_MATH_CS_FILES_H
 #define FINITE_AUTOMATA_MATH_CS_FILES_H
 
-#include "structure.h"
+#include "FA.h"
 
 /// Convert line of number into an array of special (initial or terminal) states
 /// \param stream File stream (read)

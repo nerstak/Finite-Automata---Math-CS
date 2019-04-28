@@ -1,7 +1,7 @@
 #ifndef FINITE_AUTOMATA_MATH_CS_DETERMINIZATION_H
 #define FINITE_AUTOMATA_MATH_CS_DETERMINIZATION_H
 
-#include "structure.h"
+#include "FA.h"
 
 /// Determinization for a state in synchronous automate
 /// \param presentStates List of states, where states of the new automate will be (return by parameter)

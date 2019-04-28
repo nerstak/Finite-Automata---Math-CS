@@ -4,57 +4,11 @@
 #include <iostream>
 #include <vector>
 
+#include "State.h"
+
 #define EMPTY '*'
 
 using namespace std;
-
-// Outgoing transition from a State
-typedef struct Transition {
-    struct State* dest;
-    char trans;
-
-    /// Search transition having the specified character
-    /// \param list List of Transition to look in
-    /// \param c Character of transition to look for
-    /// \return First occurrence, nullptr if none
-    static Transition* searchByCharacter(vector<Transition*> &list, char c);
-
-    /// Recover any occurrences in a list of transition for a character
-    /// \param list List of Transition to look in
-    /// \param c Character to look for
-    /// \param recover List of occurrences (return by parameter)
-    static void searchOccurrence(const vector<Transition*> &list, char c, vector<Transition*> &recover);
-} Transition;
-
-//Single automata State
-typedef struct State {
-    string id;       //Arbitrary state name
-    bool initial = false;   // true if this is an initial state
-    bool final = false;     // true if this is a final state
-    std::vector<Transition*> exits;      //list of outgoing transitions
-
-    /// Search a state by ID
-    /// \param list List of states to look in
-    /// \param id ID of the state looked for
-    /// \return Address of the state if found, nullptr if not
-    static State* searchById(vector<State*> &list, string id);
-
-    /// Search if any initial states in list
-    /// \param list List of states
-    /// \return true if any, false if none
-    static bool isAnyInitial(const vector<State*> &list);
-
-    /// Search if any final states in list
-    /// \param list List of states
-    /// \return true if any, false if none
-    static bool isAnyFinal(const vector<State*> &list);
-
-    /// Recover initial and final states from a list
-    /// \param list List of states
-    /// \param initials List where initial states will be
-    /// \param finals List where final states will be
-    static void recoverSpecials(const vector<State*> &list, vector<State*> &initials, vector<State*> &finals);
-} State;
 
 
 class FA {
@@ -84,6 +38,7 @@ public:
     ~FA();
 
     void changeName(string name);
+
     /// Copy constructor
     /// \param toCopy FA to copy from
     FA(FA &toCopy);

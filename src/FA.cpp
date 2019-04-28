@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "structure.h"
+#include "FA.h"
 
 using namespace std;
 
@@ -62,7 +62,12 @@ FA::~FA() {
 }
 
 void FA::display() const {
-    int a_size = _alphabet.size(), st_size = _states.size(), t_size, i, c, j;
+    vector<char> alphabet = _alphabet;
+    if (!_synchronous) {
+        alphabet.push_back(EMPTY);
+    }
+
+    int a_size = alphabet.size(), st_size = _states.size(), t_size, i, c, j;
 
     State* curSt;
 
@@ -87,28 +92,16 @@ void FA::display() const {
 
         //Displays the transitions of a state from each letter in the alphabet
         for (c = 0; c < a_size; c++) {
-            cout << "    " << _alphabet[c] << ": ";
+            cout << "    " << alphabet[c] << ": ";
 
             for (j = 0; j < t_size; j++) {
-                if (curSt->exits[j]->trans == _alphabet[c]) {
+                if (curSt->exits[j]->trans == alphabet[c]) {
                     cout << curSt->exits[j]->dest->id << " ";
 
                 }
-
             }
             cout << endl;
         }
-
-        // Empty stuff (yep nasty for the moment)
-        cout << "    " << EMPTY << ": ";
-        for (j = 0; j < t_size; j++) {
-            if (curSt->exits[j]->trans == EMPTY) {
-                cout << curSt->exits[j]->dest->id << " ";
-
-            }
-        }
-        cout << endl;
-
 
         cout << endl;
     }
@@ -198,54 +191,7 @@ void FA::changeName(const string &name) {
     _name = name;
 }
 
-Transition* Transition::searchByCharacter(vector<Transition*> &list, char c) {
-    vector<Transition*>::iterator it;
-    it = find_if(list.begin(), list.end(), [&c](Transition* tr) -> bool {
-        return tr->trans == c;
-    });
-    if (it != list.end()) {
-        return *it;
-    }
-    return nullptr;
-}
 
-void Transition::searchOccurrence(const vector<Transition*> &list, char c, vector<Transition*> &recover) {
-    for (Transition* tr: list) {
-        if (tr->trans == c) {
-            recover.push_back(tr);
-        }
-    }
-}
-
-State* State::searchById(vector<State*> &list, string id) {
-    vector<State*>::iterator it;
-    it = find_if(list.begin(), list.end(), [&id](State* st) -> bool {
-        return st->id == id;
-    });
-    if (it != list.end()) {
-        return *it;
-    }
-    return nullptr;
-}
-
-
-bool State::isAnyInitial(const vector<State*> &list) {
-    for (State* st: list) {
-        if (st->initial) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool State::isAnyFinal(const vector<State*> &list) {
-    for (State* st: list) {
-        if (st->final) {
-            return true;
-        }
-    }
-    return false;
-}
 
 extern string concatenateID(vector<State*> sameStates) {
     sort(sameStates.begin(), sameStates.end(),
@@ -258,16 +204,6 @@ extern string concatenateID(vector<State*> sameStates) {
     return newID;
 }
 
-void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials, vector<State*> &finals) {
-    for (State* st: list) {
-        if (st->initial) {
-            initials.push_back(st);
-        }
-        if (st->final) {
-            finals.push_back(st);
-        }
-    }
-}
 
 bool FA::isSynchronous(const bool display = false) const {
     if (display) {

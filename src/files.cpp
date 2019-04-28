@@ -12,8 +12,6 @@ FA::FA(string nameFile) {
         runTest();
         inputStream.close();
     }
-
-
 }
 
 void FA::creatingFAFile(ifstream &stream) {
