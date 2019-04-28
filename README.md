@@ -17,7 +17,8 @@ Made for the boys and also Windows.
 - [ ] Word recognition
 - [ ] Minimization
 - [ ] Completion
-- [ ] Determinization
-- [ ] Displaying FA
-- [ ] Reading FA from file
-- [ ] FA creation
+- [x] Determinization
+- [x] (A)Synchronous FA
+- [x] Displaying FA
+- [x] Reading FA from file
+- [x] FA creation
