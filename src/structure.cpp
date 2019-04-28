@@ -11,6 +11,7 @@ FA::FA(FA &toCopy) {
     _synchronous = toCopy._synchronous;
     _minimized = toCopy._minimized;
     _completed = toCopy._completed;
+    _determinized = toCopy._determinized;
 
     vector<State*> init, final;
     State::recoverSpecials(toCopy._states, init, final);
@@ -48,6 +49,7 @@ FA::FA(vector<State*> &states, vector<char> &alphabet) {
     _states = states;
     _alphabet = alphabet;
     _name = "Finite Automata (from file)";
+    runTest();
 }
 
 void FA::display() const {
@@ -108,7 +110,7 @@ void FA::display() const {
 void FA::addState(string ID) {
     State* St = new State;
     string
-    x;
+            x;
     char c, letter;
     bool exists;
     Transition* newT = nullptr;
@@ -198,6 +200,14 @@ Transition* Transition::searchByCharacter(vector<Transition*> &list, char c) {
     return nullptr;
 }
 
+void Transition::searchOccurrence(const vector<Transition*> &list, char c, vector<Transition*> &recover) {
+    for (Transition* tr: list) {
+        if (tr->trans == c) {
+            recover.push_back(tr);
+        }
+    }
+}
+
 State* State::searchById(vector<State*> &list, string id) {
     vector<State*>::iterator it;
     it = find_if(list.begin(), list.end(), [&id](State* st) -> bool {
@@ -250,8 +260,25 @@ void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials
     }
 }
 
-bool FA::isSynchronous() const {
-    // Todo: Explain why
+bool FA::isSynchronous(const bool display = false) const {
+    if (display) {
+        cout << "Is Automate Synchronous? " << boolalpha << _synchronous << endl;
+        if (!_synchronous) {
+            for (State* st: _states) {
+                // Searching empty closures
+                vector<Transition*> emptyClosure;
+                Transition::searchOccurrence(st->exits, EMPTY, emptyClosure);
+
+                if (!emptyClosure.empty()) {
+                    cout << "At state " << st->id << ", transition EMPTY to: ";
+                    for (Transition* tr: emptyClosure) {
+                        cout << tr->dest->id << " ";
+                    }
+                    cout << endl;
+                }
+            }
+        }
+    }
     return _synchronous;
 }
 
@@ -268,4 +295,90 @@ void FA::checkSynchronous() {
     }
     exit:
     _synchronous = sync;
+}
+
+static void oneEntry(const vector<State*> &list) {
+    vector<State*> init, fin;
+    State::recoverSpecials(list, init, fin);
+    if (init.size() > 1) {
+        cout << "More than one entry: ";
+        for (State* st: init) {
+            cout << st->id << " ";
+        }
+        cout << endl;
+    }
+}
+
+static void uniqueTransition(const vector<State*> &list, vector<char> alphabet) {
+    alphabet.push_back(EMPTY);
+    for (State* st: list) {
+        bool displayID = false;
+        for (char c: alphabet) {
+            vector<Transition*> sameCharacter;
+            Transition::searchOccurrence(st->exits, c, sameCharacter);
+            if (sameCharacter.size() > 1) {
+                if (!displayID) {
+                    cout << "At state " << st->id << ", same character of transition for:" << endl;
+                }
+                displayID = true;
+                cout << "- Character " << c << ", leading to: ";
+                for (Transition* tr: sameCharacter) {
+                    cout << tr->dest->id << " ";
+                }
+                cout << endl;
+            }
+        }
+        if (displayID) {
+            cout << endl;
+        }
+    }
+}
+
+bool FA::isDeterministic(const bool display = false) const {
+    if (display) {
+        cout << "Is Automate Deterministic? " << boolalpha << _determinized << endl;
+        if (!_determinized) {
+            if (!_synchronous) {
+                cout << "Automate is not Synchronous" << endl;
+            }
+
+            // Checking if there is only one entry
+            oneEntry(_states);
+
+            // Checking if every transition is unique for each state
+            uniqueTransition(_states, _alphabet);
+        }
+    }
+    return _determinized;
+}
+
+void FA::checkDeterministic() {
+    bool det = false;
+    if (_synchronous) {
+        // Checking the number of initial states
+        vector<State*> init, fin;
+        State::recoverSpecials(_states, init, fin);
+        if (init.size() > 1) {
+            goto exit;
+        }
+
+        // Checking that every transition is unique
+        for (State* st: _states) {
+            for (char c: _alphabet) {
+                vector<Transition*> occurrences;
+                Transition::searchOccurrence(st->exits, c, occurrences);
+                if (occurrences.size() > 1) {
+                    goto exit;
+                }
+            }
+        }
+        det = true;
+    }
+    exit:
+    _determinized = det;
+}
+
+void FA::runTest() {
+    checkSynchronous();
+    checkDeterministic();
 }

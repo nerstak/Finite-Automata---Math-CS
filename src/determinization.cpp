@@ -45,7 +45,6 @@ FA* FA::determinization_Sync() {
 
     // Creating the FA in itself
     FA* determinized = new FA(states, _alphabet);
-    determinized->_determinized = true;
     return determinized;
 }
 
@@ -102,7 +101,6 @@ FA* FA::determinization_Async() {
 
     // Creating the FA in itself
     FA* determinized = new FA(states, _alphabet);
-    determinized->_determinized = true;
     return determinized;
 }
 

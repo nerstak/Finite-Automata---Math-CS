@@ -18,6 +18,12 @@ typedef struct Transition {
     /// \param c Character of transition to look for
     /// \return First occurrence, nullptr if none
     static Transition* searchByCharacter(vector<Transition*> &list, char c);
+
+    /// Recover any occurrences in a list of transition for a character
+    /// \param list List of Transition to look in
+    /// \param c Character to look for
+    /// \param recover List of occurrences (return by parameter)
+    static void searchOccurrence(const vector<Transition*> &list, char c, vector<Transition*> &recover);
 } Transition;
 
 //Single automata State
@@ -86,8 +92,14 @@ public:
     void addState(string = "-1");
 
     /// Check if an automate is synchronous
+    /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isSynchronous() const;
+    bool isSynchronous(const bool display) const;
+
+    /// Check if an automate is deterministic
+    /// \param display Display result and explanation if true (false by default)
+    /// \return bool
+    bool isDeterministic(const bool display) const;
 
     bool isComplete();
 
@@ -96,6 +108,9 @@ public:
     /// Determinize an FA
     /// \return Address of the determinized FA
     FA* determinize();
+
+    /// Run every checkX
+    void runTest();
 
 private:
     /// Inner function of the constructor from file
@@ -118,11 +133,23 @@ private:
 
     /// Check if the automate is synchronous or not. Should be used after every change in the automate
     void checkSynchronous();
+
+    /// Check if the automate is deterministic or not. Should be used after every change in the automate
+    void checkDeterministic();
 };
 
 /// Generate an ID from a list of states
 /// \param sameStates List of states
 /// \return ID generated
 extern string concatenateID(vector<State*> sameStates);
+
+/// Sub function of FA::isDeterministic(), checking the number of entry
+/// \param list List of states to check in
+static void oneEntry(const vector<State*> &list);
+
+/// Sub function of FA::isDeterministic(), checking if every transition is unique
+/// \param list List of states
+/// \param alphabet Alphabet of the FA
+static void uniqueTransition(const vector<State*> &list, vector<char> alphabet);
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H

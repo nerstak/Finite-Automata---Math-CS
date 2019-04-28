@@ -9,9 +9,7 @@ FA::FA(string nameFile) {
 
     if (inputStream) {
         creatingFAFile(inputStream);
-
-        checkSynchronous();
-
+        runTest();
         inputStream.close();
     }
 
