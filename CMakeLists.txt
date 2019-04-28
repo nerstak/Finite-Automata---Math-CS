@@ -7,16 +7,16 @@ set(SRC
         main.cpp
         src/structure.cpp
         src/files.cpp
-        )
+        src/determinization.cpp)
 
 # List of h files
 set(HDR
         src/structure.h
         src/files.h
-        )
+        src/determinization.h)
 set(MAIN main.cpp)
 
-set(CMAKE_CXX_STANDARD 14) # Version of C++
+set(CMAKE_CXX_STANDARD 17) # Version of C++
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../) # Output in root folder
 
 add_executable(Finite_Automata___Math_CS ${MAIN} ${SRC} ${HDR})

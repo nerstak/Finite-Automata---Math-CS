@@ -3,16 +3,6 @@
 
 #include "structure.h"
 
-/// Read a specified file and return the corresponding FA
-/// \param nameFile Path of the file
-/// \return Address of the FA
-extern FA* readFile(std::string &nameFile);
-
-/// Create the FA from a valid stream
-/// \param stream File stream (read)
-/// \return Address of the FA
-static FA* creatingFA(ifstream &stream);
-
 /// Convert line of number into an array of special (initial or terminal) states
 /// \param stream File stream (read)
 /// \return List of special states

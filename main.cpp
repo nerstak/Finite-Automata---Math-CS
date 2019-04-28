@@ -3,9 +3,13 @@
 #include "src/files.h"
 
 int main() {
-    FA d;
-    d.addState();
-    string lmao = "automata/test.txt";
-    readFile(lmao)->display();
+    string lmao = "automata/test2.txt";
+    FA fa(lmao);
+    fa.display();
+    fa.isSynchronous(true);
+    FA* fx = fa.determinize();
+    fx->display();
+    fx->isSynchronous(true);
+
     return 0;
 }

@@ -4,25 +4,22 @@
 
 using namespace std;
 
-extern FA* readFile(string &nameFile) {
+FA::FA(string nameFile) {
     ifstream inputStream(nameFile);
 
-    if (!inputStream) {
-        return nullptr;
+    if (inputStream) {
+        creatingFAFile(inputStream);
+        runTest();
+        inputStream.close();
     }
 
-    FA* result = creatingFA(inputStream);
 
-    inputStream.close();
-    return result;
 }
 
-static FA* creatingFA(ifstream &stream) {
+void FA::creatingFAFile(ifstream &stream) {
     string line;
     int alphabetSize{0}, numberStates{0}, numberTransitions{0};
     vector<string>* initStates, * finalStates;
-    vector<State*> statesList;
-    vector<char> alphabet;
 
     alphabetSize = readUniqueNumber(stream);
     numberStates = readUniqueNumber(stream);
@@ -30,22 +27,19 @@ static FA* creatingFA(ifstream &stream) {
     finalStates = readSpecialStates(stream);
     numberTransitions = readUniqueNumber(stream);
 
-    createStates(stream, initStates, finalStates, statesList, alphabet);
+    createStates(stream, initStates, finalStates, _states, _alphabet);
 
-    bool alphaNB = alphabetSize == alphabet.size();
-    bool numberST = numberStates == statesList.size();
-    bool numberTR = countTransitions(statesList) == numberTransitions;
+    bool alphaNB = alphabetSize == _alphabet.size();
+    bool numberST = numberStates == _states.size();
+    bool numberTR = countTransitions(_states) == numberTransitions;
 
     delete (initStates);
     delete (finalStates);
 
-    if (alphaNB && numberST && numberTR) {
-        FA* newFA = new FA(statesList, alphabet);
-        return newFA;
-    } else {
-        return nullptr;
+    if (!(alphaNB && numberST && numberTR)) {
+        _states.clear();
+        _alphabet.clear();
     }
-
 }
 
 static vector<string>* readSpecialStates(ifstream &stream) {
@@ -61,7 +55,7 @@ static vector<string>* readSpecialStates(ifstream &stream) {
         if (states->empty() && size == -1) {
             // First number is for the size
             size = stoi(newState);
-        } else {
+        } else if (newState != delimiter && newState != "") {
             states->push_back(newState);
         }
         line.erase(0, pos + delimiter.length());
@@ -100,7 +94,7 @@ static void createStates(ifstream &stream, vector<string>* initialStates, vector
 }
 
 static void checkAndCreateSingleState(vector<State*> &list, string state, vector<string>* init, vector<string>* final) {
-    auto it = State::searchById(&list, state);
+    auto it = State::searchById(list, state);
 
     if (it == nullptr) {
         list.push_back(allocateState(state));
@@ -145,8 +139,8 @@ static void separateTransition(string &transitionString, char &c, string &stateF
 static void createTransition(vector<State*> &list, const string stateFromID, const string stateToID,
                              const char transition) {
     // Looking for address of the two states
-    State* stateFrom = State::searchById(&list, stateFromID);
-    State* stateTo = State::searchById(&list, stateToID);
+    State* stateFrom = State::searchById(list, stateFromID);
+    State* stateTo = State::searchById(list, stateToID);
 
     Transition* t = new Transition;
     t->trans = transition;
