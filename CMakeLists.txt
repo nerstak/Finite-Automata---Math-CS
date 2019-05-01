@@ -19,7 +19,7 @@ set(HDR
         src/Transition.h
         src/State.h)
 
-set(MAIN main.cpp src/State.cpp src/State.h)
+set(MAIN main.cpp src/State.cpp src/State.h src/Standardization.cpp)
 
 set(CMAKE_CXX_STANDARD 17) # Version of C++
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../) # Output in root folder

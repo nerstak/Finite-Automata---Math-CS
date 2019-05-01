@@ -63,6 +63,10 @@ public:
 
     FA* minimize();
 
+    ///Standardize an FA
+    /// \return Adress of the standard FA.
+    FA* standardize();
+
     /// Determinize an FA
     /// \return Address of the determinized FA
     FA* determinize();
@@ -94,6 +98,9 @@ private:
 
     /// Check if the automate is deterministic or not. Should be used after every change in the automate
     void checkDeterministic();
+
+    /// Check if the automate is standard or not.
+    bool checkStandard();
 };
 
 /// Generate an ID from a list of states
@@ -109,5 +116,8 @@ static void oneEntry(const vector<State*> &list);
 /// \param list List of states
 /// \param alphabet Alphabet of the FA
 static void uniqueTransition(const vector<State*> &list, vector<char> alphabet);
+
+
+
 
 #endif //FINITE_AUTOMATA_MATH_CS_STRUCTURE_H

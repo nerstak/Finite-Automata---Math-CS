@@ -6,10 +6,8 @@ int main() {
     string lmao = "automata/test5.txt";
     FA fa(lmao);
     fa.display();
-    fa.isSynchronous(true);
-    FA* fx = fa.determinize();
-    fx->display();
-    fx->isSynchronous(true);
+    FA* fa2 = fa.standardize();
+   // fa2->display();
 
     return 0;
 }

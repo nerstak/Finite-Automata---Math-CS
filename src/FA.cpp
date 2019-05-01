@@ -108,11 +108,9 @@ void FA::display() const {
     cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
 }
 
-
 void FA::addState(string ID) {
     State* St = new State;
-    string
-            x;
+    string x;
     char c, letter;
     bool exists;
     Transition* newT = nullptr;
