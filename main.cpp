@@ -11,5 +11,17 @@ int main() {
     fx->display();
     fx->isSynchronous(true);
 
+    string boi="automata/testRead.txt";
+
+    FA Aut(boi);
+    Aut.display();
+    if(Aut.recognizeWord("aa"))
+        cout << "reco: aa" << endl;
+    if(Aut.recognizeWord("abbbaaaaba"))
+        cout << "reco: abbbaaaaba" << endl;
+    if(Aut.recognizeWord("baa"))
+        cout << "reco: baa" << endl;
+    if(Aut.recognizeWord("aab"))
+        cout << "reco: aab" << endl;
     return 0;
 }

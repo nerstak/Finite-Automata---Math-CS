@@ -45,9 +45,13 @@ public:
 
     void changeName(const string &name);
 
+
     void display() const;
 
-    void addState(string = "-1");
+    /// Checks if an FA recognizes a given word
+    /// \param word the string to test
+    /// \return True if it is recognized
+    bool recognizeWord(string word);
 
     /// Check if an automate is synchronous
     /// \param display Display result and explanation if true (false by default)
