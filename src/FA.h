@@ -28,7 +28,7 @@ public:
 
     /// Creating FA from a file
     /// \param nameFile Path and name of the file
-    explicit FA(std::string nameFile);
+    explicit FA(const std::string &nameFile);
 
     /// Creating FA from existing states and alphabet
     /// \param states Vector of states
@@ -36,8 +36,6 @@ public:
     FA(vector<State*> &states, vector<char> &alphabet);
 
     ~FA();
-
-    void changeName(string name);
 
     /// Copy constructor
     /// \param toCopy FA to copy from

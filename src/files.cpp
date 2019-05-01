@@ -4,7 +4,7 @@
 
 using namespace std;
 
-FA::FA(string nameFile) {
+FA::FA(const string &nameFile) {
     ifstream inputStream(nameFile);
 
     if (inputStream) {
@@ -91,7 +91,8 @@ static void createStates(ifstream &stream, vector<string>* initialStates, vector
     }
 }
 
-static void checkAndCreateSingleState(vector<State*> &list, string state, vector<string>* init, vector<string>* final) {
+static void
+checkAndCreateSingleState(vector<State*> &list, const string &state, vector<string>* init, vector<string>* final) {
     auto it = State::searchById(list, state);
 
     if (it == nullptr) {
@@ -134,16 +135,18 @@ static void separateTransition(string &transitionString, char &c, string &stateF
     }
 }
 
-static void createTransition(vector<State*> &list, const string stateFromID, const string stateToID,
+static void createTransition(vector<State*> &list, const string &stateFromID, const string &stateToID,
                              const char transition) {
     // Looking for address of the two states
     State* stateFrom = State::searchById(list, stateFromID);
     State* stateTo = State::searchById(list, stateToID);
 
-    Transition* t = new Transition;
-    t->trans = transition;
-    t->dest = stateTo;
-    stateFrom->exits.push_back(t);
+    if (!verifyExistence(stateFrom, stateTo, transition)) {
+        Transition* t = new Transition;
+        t->trans = transition;
+        t->dest = stateTo;
+        stateFrom->exits.push_back(t);
+    }
 }
 
 static void addCharacterToAlphabet(vector<char> &alpha, char c) {
@@ -157,4 +160,16 @@ static int countTransitions(vector<State*> &list) {
     int count{0};
     for_each(list.begin(), list.end(), [&count](State* st) -> void { count += st->exits.size(); });
     return count;
+}
+
+static bool verifyExistence(const State* stateFrom, const State* stateTo, char c) {
+    vector<Transition*> recover;
+    Transition::searchOccurrence(stateFrom->exits, c, recover);
+
+    for (Transition* tr: recover) {
+        if (tr->dest == stateTo) {
+            return true;
+        }
+    }
+    return false;
 }
