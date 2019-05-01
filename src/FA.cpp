@@ -49,6 +49,8 @@ FA::FA(vector<State*> &states, vector<char> &alphabet) {
     _states = states;
     _alphabet = alphabet;
     _name = "Finite Automata (from file)";
+
+    sort();
     runTest();
 }
 
@@ -191,11 +193,8 @@ void FA::changeName(const string &name) {
     _name = name;
 }
 
-
-
 extern string concatenateID(vector<State*> sameStates) {
-    sort(sameStates.begin(), sameStates.end(),
-         [](const State* st1, const State* st2) -> bool { return stoi(st1->id) < stoi(st2->id); });
+    State::sortStates(sameStates);
     string newID;
     for (State* st: sameStates) {
         if (!newID.empty()) { newID += "."; }
@@ -326,4 +325,12 @@ void FA::checkDeterministic() {
 void FA::runTest() {
     checkSynchronous();
     checkDeterministic();
+}
+
+void FA::sort() {
+    std::sort(_alphabet.begin(), _alphabet.end());
+    State::sortStates(_states);
+    for (State* st: _states) {
+        Transition::sortTransitions(st->exits);
+    }
 }

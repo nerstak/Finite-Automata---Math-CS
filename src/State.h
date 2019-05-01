@@ -7,6 +7,7 @@
 
 //Single automata State
 typedef struct State {
+public:
     std::string id;       //Arbitrary state name
     bool initial = false;   // true if this is an initial state
     bool final = false;     // true if this is a final state
@@ -34,6 +35,8 @@ typedef struct State {
     /// \param finals List where final states will be
     static void
     recoverSpecials(const std::vector<State*> &list, std::vector<State*> &initials, std::vector<State*> &finals);
+
+    static void sortStates(std::vector<State*> &list);
 } State;
 
 

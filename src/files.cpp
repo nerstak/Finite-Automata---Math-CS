@@ -9,6 +9,7 @@ FA::FA(const string &nameFile) {
 
     if (inputStream) {
         creatingFAFile(inputStream);
+        sort();
         runTest();
         inputStream.close();
     }

@@ -92,6 +92,9 @@ private:
 
     /// Check if the automate is deterministic or not. Should be used after every change in the automate
     void checkDeterministic();
+
+    /// Sort transitions and states
+    void sort();
 };
 
 /// Generate an ID from a list of states

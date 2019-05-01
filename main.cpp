@@ -3,7 +3,7 @@
 #include "src/files.h"
 
 int main() {
-    string lmao = "automata/test2.txt";
+    string lmao = "automata/test5.txt";
     FA fa(lmao);
     fa.display();
     fa.isSynchronous(true);

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 #include "Transition.h"
 
 using namespace std;
@@ -20,4 +21,14 @@ void Transition::searchOccurrence(const vector<Transition*> &list, char c, vecto
             recover.push_back(tr);
         }
     }
+}
+
+static bool sortingTransitions(const Transition* t1, const Transition* t2) {
+    if (int(t1->trans) > int(t2->trans)) {
+        return true;
+    }
+}
+
+void Transition::sortTransitions(vector<Transition*> &list) {
+    sort(list.begin(), list.end(), sortingTransitions);
 }
