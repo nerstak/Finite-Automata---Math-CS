@@ -17,7 +17,7 @@ public:
     /// \param list List of states to look in
     /// \param id ID of the state looked for
     /// \return Address of the state if found, nullptr if not
-    static State* searchById(std::vector<State*> &list, std::string id);
+    static State* searchById(std::vector<State*> list, std::string id);
 
     /// Search if any initial states in list
     /// \param list List of states

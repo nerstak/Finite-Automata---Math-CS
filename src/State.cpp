@@ -3,7 +3,7 @@
 
 using namespace std;
 
-State* State::searchById(vector<State*> &list, string id) {
+State* State::searchById(vector<State*> list, string id) {
     vector<State*>::iterator it;
     it = find_if(list.begin(), list.end(), [&id](State* st) -> bool {
         return st->id == id;

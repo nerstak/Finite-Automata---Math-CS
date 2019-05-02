@@ -71,9 +71,14 @@ public:
     void runTest();
 
 private:
+    /// Clean the alphabet and the list of states
+    void cleaningFA();
+
     /// Inner function of the constructor from file
     /// \param stream Valid input stream
-    void creatingFAFile(ifstream &stream);
+    /// \param nameFile Name of the file
+    /// \return Integrity of the operation (true: Performed)
+    bool creatingFAFile(ifstream &stream, const std::string &nameFile);
 
     /// Inner function of the copy constructor
     /// \param toCopyStates States of the FA to copy from

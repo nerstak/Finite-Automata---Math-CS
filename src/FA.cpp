@@ -55,12 +55,18 @@ FA::FA(vector<State*> &states, vector<char> &alphabet) {
 }
 
 FA::~FA() {
+    cleaningFA();
+}
+
+void FA::cleaningFA() {
     for (State* st: _states) {
         for (Transition* t: st->exits) {
             delete (t);
         }
         delete (st);
     }
+    _alphabet.clear();
+    _states.clear();
 }
 
 void FA::display() const {
