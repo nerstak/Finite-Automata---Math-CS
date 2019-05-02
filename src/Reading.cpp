@@ -19,6 +19,7 @@ bool FA::recognizeWord(string word) {
 
         cur = ReadChar(c, cur);
     }
+    State::groupEmpty(cur);
 
     //if there is a way to reach at least 1 final state at the end of the word, it is recognized
     return State::isAnyFinal(cur);

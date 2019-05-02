@@ -11,6 +11,13 @@ int main() {
     fx->display();
     fx->isSynchronous(true);
 
+    string Yoo="automata/test4.txt";
+
+    FA doot(Yoo);
+    doot.display();
+    if(doot.recognizeWord("ab")) //yes
+        cout << "Yooooooo reco: ab" << endl;
+
     string boi="automata/testRead.txt";
 
     FA Aut(boi);
