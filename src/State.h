@@ -3,7 +3,6 @@
 
 
 #include "Transition.h"
-#include "FA.h"
 #include <iostream>
 
 //Single automata State
