@@ -10,7 +10,7 @@ set(SRC
         src/determinization.cpp
         src/Transition.cpp
         src/State.cpp
-        src/Reading.cpp)
+        src/reading.cpp)
 
 # List of h files
 set(HDR
@@ -19,7 +19,7 @@ set(HDR
         src/determinization.h
         src/Transition.h
         src/State.h
-        src/Reading.h)
+        src/reading.h)
 
 set(MAIN main.cpp src/State.cpp src/State.h)
 

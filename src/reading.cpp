@@ -1,4 +1,4 @@
-#include "Reading.h"
+#include "reading.h"
 
 #include <iostream>
 

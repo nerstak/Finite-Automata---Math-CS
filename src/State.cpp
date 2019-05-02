@@ -57,11 +57,43 @@ void State::groupEmpty(std::vector<State*> &emptyGroup) {
     }
 }
 
-
-void State::sortStates(std::vector<State*> &list) {
-    sort(list.begin(), list.end(),
-         [](const State* st1, const State* st2) -> bool {
-             return stoi(st1->id) < stoi(st2->id);
-         });
+static string readingPartID(string &id) {
+    size_t pos;
+    string value = id, delimiter = ".";
+    if ((pos = id.find(delimiter)) != string::npos) {
+        value = id.substr(0, pos);
+        id.erase(0, pos + delimiter.length());
+    }
+    return value;
 }
 
+static bool isIDSmaller(const State* st1, const State* st2) {
+    bool equal = true;
+    string tmp1, tmp2;
+    string id1 = st1->id, id2 = st2->id;
+    do {
+        tmp1 = readingPartID(id1);
+        tmp2 = readingPartID(id2);
+        if (stoi(tmp1) != stoi(tmp2)) {
+            equal = false;
+        }
+    } while (equal);
+    return stoi(tmp1) < stoi(tmp2);
+}
+
+void State::sortStates(std::vector<State*> &list) {
+    sort(list.begin(), list.end(), isIDSmaller);
+}
+
+static bool isTransitionSmaller(const Transition* t1, const Transition* t2) {
+    if (int(t1->trans) < int(t2->trans)) {
+        return true;
+    } else if (t1->trans == t2->trans) {
+        return isIDSmaller(t1->dest, t2->dest);
+    }
+    return false;
+}
+
+void Transition::sortTransitions(std::vector<Transition*> &list) {
+    sort(list.begin(), list.end(), isTransitionSmaller);
+}

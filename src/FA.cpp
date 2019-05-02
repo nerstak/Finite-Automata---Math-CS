@@ -116,12 +116,6 @@ void FA::display() const {
     cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
 }
 
-
-
-void FA::changeName(const string &name) {
-    _name = name;
-}
-
 extern string concatenateID(vector<State*> sameStates) {
     State::sortStates(sameStates);
     string newID;

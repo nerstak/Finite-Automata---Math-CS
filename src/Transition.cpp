@@ -22,13 +22,3 @@ void Transition::searchOccurrence(const vector<Transition*> &list, char c, vecto
         }
     }
 }
-
-static bool sortingTransitions(const Transition* t1, const Transition* t2) {
-    if (int(t1->trans) > int(t2->trans)) {
-        return true;
-    }
-}
-
-void Transition::sortTransitions(vector<Transition*> &list) {
-    sort(list.begin(), list.end(), sortingTransitions);
-}
