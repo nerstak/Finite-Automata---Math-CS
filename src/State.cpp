@@ -43,3 +43,11 @@ void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials
         }
     }
 }
+
+void State::sortStates(std::vector<State*> &list) {
+    sort(list.begin(), list.end(),
+         [](const State* st1, const State* st2) -> bool {
+             return stoi(st1->id) < stoi(st2->id);
+         });
+}
+

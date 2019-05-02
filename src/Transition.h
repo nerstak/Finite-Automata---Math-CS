@@ -20,6 +20,10 @@ typedef struct Transition {
     /// \param c Character to look for
     /// \param recover List of occurrences (return by parameter)
     static void searchOccurrence(const std::vector<Transition*> &list, char c, std::vector<Transition*> &recover);
+
+    /// Sort transition by alphabetical order of character of transition
+    /// \param list
+    static void sortTransitions(std::vector<Transition*> &list);
 } Transition;
 
 
