@@ -6,8 +6,6 @@
 
 #include "State.h"
 
-#define EMPTY '*'
-
 using namespace std;
 
 
