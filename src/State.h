@@ -3,6 +3,7 @@
 
 
 #include "Transition.h"
+#include "FA.h"
 #include <iostream>
 
 //Single automata State
@@ -34,6 +35,11 @@ typedef struct State {
     /// \param finals List where final states will be
     static void
     recoverSpecials(const std::vector<State*> &list, std::vector<State*> &initials, std::vector<State*> &finals);
+
+    /// Takes a list of states and adds to the list all the groups accessible from those states by empty transitions
+    /// \param emptyGroup List of states that empty states are added to
+    static void groupEmpty(std::vector<State*> &emptyGroup);
+
 } State;
 
 

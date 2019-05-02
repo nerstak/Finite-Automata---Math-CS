@@ -45,7 +45,7 @@ public:
 
     void changeName(const string &name);
 
-
+    ///Displays the automaton
     void display() const;
 
     /// Checks if an FA recognizes a given word

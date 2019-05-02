@@ -4,7 +4,12 @@
 #include "FA.h"
 #include "State.h"
 
-static void ReadChar(char c, std::vector<State*> &cur, std::vector<State*> &next);
+/// Takes a List of states and returns the list of all accessible states with a given transition character
+/// \param c transition character
+/// \param cur list of starting states
+/// \return list of destination states
+static vector<State*> ReadChar(char c, vector<State*> cur);
+
 
 
 
