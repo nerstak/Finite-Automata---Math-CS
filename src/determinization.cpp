@@ -54,16 +54,7 @@ determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &
                              const vector<State*> &init, const vector<State*> &fin) {
     // Recovering every state accessible with empty transition
     vector<State*> groupState = sameStates;
-    for (int i = 0; i < groupState.size(); i++) {
-        // Note that we are using a classic for loop, because otherwise it wouldn't take into account the update made to groupState
-        for (Transition* tr: groupState[i]->exits) {
-            if (tr->trans == EMPTY) {
-                if (State::searchById(groupState, tr->dest->id) == nullptr) {
-                    groupState.push_back(tr->dest);
-                }
-            }
-        }
-    }
+    State::groupEmpty(groupState);
 
     // Naming the new state
     string newID = concatenateID(groupState);

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#define EMPTY '*'
+
 
 // Outgoing transition from a State
 typedef struct Transition {
