@@ -45,7 +45,7 @@ void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials
 }
 
 void State::groupEmpty(std::vector<State*> &emptyGroup) {
-    for (int i=0; i < emptyGroup.size(); i++) {
+    for (int i = 0; i < emptyGroup.size(); i++) {
         // Note that we are using a classic int for loop, because otherwise iw wouldn't take into account the update made to empty group + vectors realloc on push
         for (Transition* tr: emptyGroup[i]->exits) {
             if (tr->trans == EMPTY) {
