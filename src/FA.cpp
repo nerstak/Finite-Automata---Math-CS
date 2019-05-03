@@ -55,12 +55,18 @@ FA::FA(vector<State*> &states, vector<char> &alphabet) {
 }
 
 FA::~FA() {
+    cleaningFA();
+}
+
+void FA::cleaningFA() {
     for (State* st: _states) {
         for (Transition* t: st->exits) {
             delete (t);
         }
         delete (st);
     }
+    _alphabet.clear();
+    _states.clear();
 }
 
 void FA::display() const {
@@ -108,12 +114,6 @@ void FA::display() const {
         cout << endl;
     }
     cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
-}
-
-
-
-void FA::changeName(const string &name) {
-    _name = name;
 }
 
 extern string concatenateID(vector<State*> sameStates) {

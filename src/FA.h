@@ -39,8 +39,6 @@ public:
     /// \param toCopy FA to copy from
     FA(FA &toCopy);
 
-    void changeName(const string &name);
-
     ///Displays the automaton
     void display() const;
 
@@ -52,12 +50,12 @@ public:
     /// Check if an automate is synchronous
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isSynchronous(const bool display) const;
+    bool isSynchronous(bool display) const;
 
     /// Check if an automate is deterministic
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isDeterministic(const bool display) const;
+    bool isDeterministic(bool display) const;
 
     bool isComplete();
 
@@ -71,9 +69,14 @@ public:
     void runTest();
 
 private:
+    /// Clean the alphabet and the list of states
+    void cleaningFA();
+
     /// Inner function of the constructor from file
     /// \param stream Valid input stream
-    void creatingFAFile(ifstream &stream);
+    /// \param nameFile Name of the file
+    /// \return Integrity of the operation (true: Performed)
+    bool creatingFAFile(ifstream &stream, const std::string &nameFile);
 
     /// Inner function of the copy constructor
     /// \param toCopyStates States of the FA to copy from
@@ -95,7 +98,7 @@ private:
     /// Check if the automate is deterministic or not. Should be used after every change in the automate
     void checkDeterministic();
 
-    /// Sort transitions and states
+    /// Sort transitions and states. It leads to a better display
     void sort();
 };
 

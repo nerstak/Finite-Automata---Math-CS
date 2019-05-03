@@ -8,17 +8,19 @@ FA::FA(const string &nameFile) {
     ifstream inputStream(nameFile);
 
     if (inputStream) {
-        creatingFAFile(inputStream);
+        creatingFAFile(inputStream, nameFile);
+        _name = nameFile;
         sort();
         runTest();
         inputStream.close();
     }
 }
 
-void FA::creatingFAFile(ifstream &stream) {
+bool FA::creatingFAFile(ifstream &stream, const string &nameFile) {
     string line;
     int alphabetSize{0}, numberStates{0}, numberTransitions{0};
     vector<string>* initStates, * finalStates;
+    vector<char> alphabetCheck;
 
     alphabetSize = readUniqueNumber(stream);
     numberStates = readUniqueNumber(stream);
@@ -26,19 +28,40 @@ void FA::creatingFAFile(ifstream &stream) {
     finalStates = readSpecialStates(stream);
     numberTransitions = readUniqueNumber(stream);
 
-    createStates(stream, initStates, finalStates, _states, _alphabet);
-
-    bool alphaNB = alphabetSize == _alphabet.size();
-    bool numberST = numberStates == _states.size();
-    bool numberTR = countTransitions(_states) == numberTransitions;
-
-    delete (initStates);
-    delete (finalStates);
-
-    if (!(alphaNB && numberST && numberTR)) {
-        _states.clear();
-        _alphabet.clear();
+    if (!initStates || !finalStates) {
+        cout << "Error in reading initial or final states of " << nameFile << endl;
+        goto error;
     }
+
+    //Creation of alphabet
+    if (!generateAlphabet(alphabetSize, _alphabet)) {
+        cout << "Error in the creation of the alphabet of " << nameFile << endl;
+        goto error;
+    }
+    // Creation of states
+    if (!generateStates(numberStates, _states)) {
+        cout << "Error in the creation of the states of " << nameFile << endl;
+        goto error;
+    }
+
+    giveAttributesStates(_states, initStates, finalStates);
+
+    // Creation of all transitions
+    if (createTransitions(stream, _states, alphabetCheck) != numberTransitions) {
+        cout << "Error in the creation of the transitions of " << nameFile << endl;
+        goto error;
+    }
+
+    if (alphabetCheck.size() > _alphabet.size()) {
+        cout << "Conflict between the announced size of the alphabet and the alphabet used" << endl;
+        goto error;
+    }
+
+    return true;
+
+    error:
+    cleaningFA();
+    return false;
 }
 
 static vector<string>* readSpecialStates(ifstream &stream) {
@@ -72,39 +95,31 @@ static int readUniqueNumber(ifstream &stream) {
     return stoi(line);
 }
 
-static void createStates(ifstream &stream, vector<string>* initialStates, vector<string>* finalStates,
-                         vector<State*> &states,
-                         vector<char> &alpha) {
+static int createTransitions(ifstream &stream, vector<State*> &states, vector<char> &alpha) {
     string line;
+    int nbTransitions = 0;
     while (getline(stream, line)) {
         char c;
         string stateFrom, stateTo;
         // Splitting the instruction into 3 parts
         separateTransition(line, c, stateFrom, stateTo);
 
-        // Recovering or creating states of the transition
-        checkAndCreateSingleState(states, stateFrom, initialStates, finalStates);
-        checkAndCreateSingleState(states, stateTo, initialStates, finalStates);
-
-        createTransition(states, stateFrom, stateTo, c);
+        if (createSingleTransition(states, stateFrom, stateTo, c)) {
+            nbTransitions++;
+        }
 
         addCharacterToAlphabet(alpha, c);
     }
+    return nbTransitions;
 }
 
-static void
-checkAndCreateSingleState(vector<State*> &list, const string &state, vector<string>* init, vector<string>* final) {
-    auto it = State::searchById(list, state);
-
-    if (it == nullptr) {
-        list.push_back(allocateState(state));
-
-        // Checking if the created state is special
-        if (find(init->begin(), init->end(), state) != init->end()) {
-            list.back()->initial = true;
+static void giveAttributesStates(vector<State*> &list, const vector<string>* init, const vector<string>* final) {
+    for (State* st: list) {
+        if (find(init->begin(), init->end(), st->id) != init->end()) {
+            st->initial = true;
         }
-        if (find(final->begin(), final->end(), state) != final->end()) {
-            list.back()->final = true;
+        if (find(final->begin(), final->end(), st->id) != final->end()) {
+            st->final = true;
         }
     }
 }
@@ -136,18 +151,20 @@ static void separateTransition(string &transitionString, char &c, string &stateF
     }
 }
 
-static void createTransition(vector<State*> &list, const string &stateFromID, const string &stateToID,
-                             const char transition) {
+static bool createSingleTransition(vector<State*> &list, const string &stateFromID, const string &stateToID,
+                                   char transition) {
     // Looking for address of the two states
     State* stateFrom = State::searchById(list, stateFromID);
     State* stateTo = State::searchById(list, stateToID);
 
-    if (!verifyExistence(stateFrom, stateTo, transition)) {
+    if (stateFrom && stateTo && !verifyExistence(stateFrom, stateTo, transition)) {
         Transition* t = new Transition;
         t->trans = transition;
         t->dest = stateTo;
         stateFrom->exits.push_back(t);
+        return true;
     }
+    return false;
 }
 
 static void addCharacterToAlphabet(vector<char> &alpha, char c) {
@@ -155,12 +172,6 @@ static void addCharacterToAlphabet(vector<char> &alpha, char c) {
     if (find(alpha.begin(), alpha.end(), c) == alpha.end() && c != EMPTY) {
         alpha.push_back(c);
     }
-}
-
-static int countTransitions(vector<State*> &list) {
-    int count{0};
-    for_each(list.begin(), list.end(), [&count](State* st) -> void { count += st->exits.size(); });
-    return count;
 }
 
 static bool verifyExistence(const State* stateFrom, const State* stateTo, char c) {
@@ -173,4 +184,25 @@ static bool verifyExistence(const State* stateFrom, const State* stateTo, char c
         }
     }
     return false;
+}
+
+static bool generateAlphabet(int n, vector<char> &alphabet) {
+    if (n > 25) {
+        // We only deal with character from 'a' to 'z'
+        return false;
+    }
+    for (int i = 0; i < n; i++) {
+        alphabet.push_back('a' + i);
+    }
+    return true;
+}
+
+static bool generateStates(int n, vector<State*> &list) {
+    if (n <= 0) {
+        return false;
+    }
+    for (int i = 0; i < n; i++) {
+        list.push_back(allocateState(to_string(i)));
+    }
+    return true;
 }

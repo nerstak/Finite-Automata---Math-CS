@@ -10,7 +10,7 @@ set(SRC
         src/determinization.cpp
         src/Transition.cpp
         src/State.cpp
-        src/Reading.cpp)
+        src/reading.cpp)
 
 # List of h files
 set(HDR
@@ -19,11 +19,9 @@ set(HDR
         src/determinization.h
         src/Transition.h
         src/State.h
-        src/Reading.h)
-
-set(MAIN main.cpp src/State.cpp src/State.h)
+        src/reading.h)
 
 set(CMAKE_CXX_STANDARD 17) # Version of C++
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../) # Output in root folder
 
-add_executable(Finite_Automata___Math_CS ${MAIN} ${SRC} ${HDR})
+add_executable(Finite_Automata___Math_CS ${SRC} ${HDR})
