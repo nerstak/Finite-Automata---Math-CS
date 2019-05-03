@@ -33,13 +33,17 @@ bool State::isAnyFinal(const vector<State*> &list) {
     return false;
 }
 
-void State::recoverSpecials(const vector<State*> &list, vector<State*> &initials, vector<State*> &finals) {
+void State::recoverSpecials(const vector<State*> &list, vector<State*> * initials, vector<State*> * finals) {
     for (State* st: list) {
-        if (st->initial) {
-            initials.push_back(st);
+        if(initials){
+            if (st->initial) {
+                initials->push_back(st);
+            }
         }
-        if (st->final) {
-            finals.push_back(st);
+        if(finals) {
+            if (st->final) {
+                finals->push_back(st);
+            }
         }
     }
 }

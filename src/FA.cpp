@@ -14,7 +14,7 @@ FA::FA(FA &toCopy) {
     _determinized = toCopy._determinized;
 
     vector<State*> init, final;
-    State::recoverSpecials(toCopy._states, init, final);
+    State::recoverSpecials(toCopy._states, &init, &final);
 
     for (State* st: init) {
         copyStatesProcess(toCopy._states, st->id);
@@ -165,8 +165,8 @@ void FA::checkSynchronous() {
 }
 
 static void oneEntry(const vector<State*> &list) {
-    vector<State*> init, fin;
-    State::recoverSpecials(list, init, fin);
+    vector<State*> init;
+    State::recoverSpecials(list, &init, nullptr);
     if (init.size() > 1) {
         cout << "More than one entry: ";
         for (State* st: init) {
@@ -223,8 +223,8 @@ void FA::checkDeterministic() {
     bool det = false;
     if (_synchronous) {
         // Checking the number of initial states
-        vector<State*> init, fin;
-        State::recoverSpecials(_states, init, fin);
+        vector<State*> init;
+        State::recoverSpecials(_states, &init, nullptr);
         if (init.size() > 1) {
             goto exit;
         }

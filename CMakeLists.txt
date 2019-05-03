@@ -10,7 +10,8 @@ set(SRC
         src/determinization.cpp
         src/Transition.cpp
         src/State.cpp
-        src/reading.cpp)
+        src/reading.cpp
+        src/minimization.cpp)
 
 # List of h files
 set(HDR
@@ -19,7 +20,8 @@ set(HDR
         src/determinization.h
         src/Transition.h
         src/State.h
-        src/reading.h)
+        src/reading.h
+        src/minimization.h)
 
 set(CMAKE_CXX_STANDARD 17) # Version of C++
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../) # Output in root folder

@@ -5,10 +5,10 @@
 using namespace std;
 
 bool FA::recognizeWord(string word) {
-    vector<State*> cur, Finals;
+    vector<State*> cur;
 
     //Starts from all initial states
-    State::recoverSpecials(_states, cur, Finals);
+    State::recoverSpecials(_states, &cur, nullptr);
 
     //Transitions by character until the word is over
     for (char c : word) {

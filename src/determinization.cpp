@@ -39,7 +39,7 @@ FA* FA::determinization_Sync() {
     vector<State*> initials, finals, states;
 
     // Recovering final and initial states
-    State::recoverSpecials(_states, initials, finals);
+    State::recoverSpecials(_states, &initials, &finals);
 
     determinizationProcess_Sync(states, _alphabet, initials, initials, finals);
 
@@ -51,7 +51,7 @@ FA* FA::determinization_Sync() {
 static State*
 determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &alphabet,
                              const vector<State*> &sameStates,
-                             const vector<State*> &init, const vector<State*> &fin) {
+                             const vector<State*> &init) {
     // Recovering every state accessible with empty transition
     vector<State*> groupState = sameStates;
     State::groupEmpty(groupState);
@@ -75,7 +75,7 @@ determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &
         if (!sameFinalState.empty()) {
             Transition* tr = new Transition;
             tr->trans = c;
-            tr->dest = determinizationProcess_Async(presentStates, alphabet, sameFinalState, init, fin);
+            tr->dest = determinizationProcess_Async(presentStates, alphabet, sameFinalState, init);
             actual->exits.push_back(tr);
         }
     }
@@ -83,12 +83,12 @@ determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &
 }
 
 FA* FA::determinization_Async() {
-    vector<State*> initials, finals, states;
+    vector<State*> initials, states;
 
     // Recovering final and initial states
-    State::recoverSpecials(_states, initials, finals);
+    State::recoverSpecials(_states, &initials, nullptr);
 
-    determinizationProcess_Async(states, _alphabet, initials, initials, finals);
+    determinizationProcess_Async(states, _alphabet, initials, initials);
 
     // Creating the FA in itself
     FA* determinized = new FA(states, _alphabet);

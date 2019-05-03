@@ -31,10 +31,10 @@ public:
 
     /// Recover initial and final states from a list
     /// \param list List of states
-    /// \param initials List where initial states will be
-    /// \param finals List where final states will be
+    /// \param initials List where initial states will be, ptrnull if not interested in initials
+    /// \param finals List where final states will be, ptrnull if not interested in finals
     static void
-    recoverSpecials(const std::vector<State*> &list, std::vector<State*> &initials, std::vector<State*> &finals);
+    recoverSpecials(const std::vector<State*> &list, std::vector<State*> *initials, std::vector<State*> *finals);
 
     /// Takes a list of states and adds to the list all the groups accessible from those states by empty transitions
     /// \param emptyGroup List of states that empty states are added to
