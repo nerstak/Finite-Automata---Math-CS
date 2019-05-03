@@ -28,6 +28,11 @@ bool FA::creatingFAFile(ifstream &stream, const string &nameFile) {
     finalStates = readSpecialStates(stream);
     numberTransitions = readUniqueNumber(stream);
 
+    if (!initStates || !finalStates) {
+        cout << "Error in reading initial or final states of " << nameFile << endl;
+        goto error;
+    }
+
     //Creation of alphabet
     if (!generateAlphabet(alphabetSize, _alphabet)) {
         cout << "Error in the creation of the alphabet of " << nameFile << endl;
