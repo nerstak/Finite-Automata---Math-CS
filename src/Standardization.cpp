@@ -4,8 +4,8 @@
 FA* FA::standardize() {
 
     //First, check if the Automata isn't already standard, in order to not create new state.
-    if(this->checkStandard()){
-        cout << "Already Standard!" << endl;
+    if(!this->checkStandard()){
+        cout << "Unable to standardization." << endl;
         return this;
     }
 
@@ -38,31 +38,6 @@ FA* FA::standardize() {
     // We add our new and unique initial state to our states.
     newFA->_states.push_back(newIni);
     return newFA;
-
-}
-
-bool FA::checkStandard(){
-    // 2 case to standardize : +2 state and 1 state with a transition ending in this one.
-    int count = 0;
-
-    //We go through the states
-    for(State* st: this->_states){
-
-        //if there are more than 2 initials states, the FA isn't standard
-        if(st->initial){
-            count++;
-            if(count==2)
-                return false;
-        }
-
-        //For each transitions, if one is going to an initial state, the FA isn't standard
-        for(Transition* tr: st->exits){
-            if(tr->dest->initial)
-                return false;
-        }
-    }
-    //In all other case, the FA is standard
-    return true;
 
 }
 

@@ -22,6 +22,7 @@ private:
     bool _determinized = false;
     bool _completed = false;
     bool _synchronous = false;
+    bool _standard = false;
 
 public:
     FA();

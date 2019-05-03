@@ -321,7 +321,39 @@ void FA::checkDeterministic() {
     _determinized = det;
 }
 
+
+bool FA::checkStandard(){
+    // THE BOOLEAN RETURNED TELL IF THE FA IS STANDARDIZABLE
+
+    // 2 case to standardize : +2 initials states and 1 initial state with a transition ending to this one.
+    int count = 0;
+
+    //We go through the states
+    for(State* st: this->_states){
+
+        //if there are more than 2 initials states, the FA isn't standard
+        if(st->initial){
+            count++;
+            if(count==2)
+                return true;
+        }
+
+        //For each transitions, if one is going to an initial state, the FA isn't standard
+        for(Transition* tr: st->exits){
+            if(tr->dest->initial)
+                return true;
+        }
+    }
+    //We have two case now : The FA can be standard or can have no initial state : in both case the FA isn't able to standardisation.
+    if(count == 0)
+        _standard = true;
+    return false;
+
+}
+
+
 void FA::runTest() {
     checkSynchronous();
     checkDeterministic();
+    checkStandard();
 }
