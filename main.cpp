@@ -3,11 +3,11 @@
 #include "src/files.h"
 
 int main() {
-    string lmao = "automata/end/L2Int1-7-1.txt";
+    string lmao = "automata/L2Int1-7-32.txt";
     FA fa(lmao);
     fa.display();
-    FA* fa2 = fa.standardize();
-   // fa2->display();
+    FA* fa2 = fa.determinize();
+    fa2->display();
 
    /**
     string Yoo="automata/test/test4.txt";

@@ -11,6 +11,7 @@ FA* FA::standardize() {
 
     //Initialization of our new FA
     FA* newFA = new FA(*this);
+    newFA->_name = _name + " Standardized";
     State* newIni = new State;
     newIni->initial = true;
     newIni->id = to_string(newFA->_states.size() + 1);
