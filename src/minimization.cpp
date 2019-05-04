@@ -3,6 +3,7 @@
 
 FA* FA::minimize()
 {
+    //TODO prevent Non deterministic, Non complete FA + add comments
     Partition P = new vector<PatternGroup>;
     P->resize(2);
 
@@ -19,7 +20,17 @@ FA* FA::minimize()
 
     P = partitioning(P, _alphabet);
 
-    return Partition2FA(P);
+    FA* newAuto = new FA;
+
+    newAuto->_states = *Partition2States(P, _alphabet);
+    newAuto->_alphabet = _alphabet;
+    newAuto->_completed = true;
+    newAuto->_determinized = true;
+    newAuto->_minimized = true;
+    newAuto->_synchronous = true;
+    newAuto->_name = "Minimized " + _name;
+
+    return newAuto;
 }
 
 
@@ -32,7 +43,7 @@ static Partition partitioning(Partition P, vector<char> alphabet)
     vector<PatternGroup>::iterator EndPattGroups;
 
 
-    for (PatternGroup Pgroup  : *P)
+    for (PatternGroup const &Pgroup  : *P)
     {
         nextP = new vector<PatternGroup>;
 
@@ -77,10 +88,41 @@ static Partition partitioning(Partition P, vector<char> alphabet)
     return nextP;
 }
 
-static FA* Partition2FA(Partition P)
+static vector<State*>* Partition2States(Partition P, vector<char> &alphabet)
 {
+    vector<State*>* FaStates = new vector<State*>;
+    State* newSt;
 
+    for (PatternGroup curG : *P)
+    {
+        newSt = new State;
+        for (State* curSt : curG.group)
+        {
+            if (curSt != curG.group[0])
+            {
+                newSt->id += "+";
+            }
+            newSt->id += curSt->id;
+        }
+        newSt->initial = State::isAnyInitial(curG.group);
+        newSt->final = State::isAnyFinal(curG.group);
+        FaStates->push_back(newSt);
+    }
 
+    Transition* newTrans;
+
+    for (int i = 0; i < FaStates->size(); i++)
+    {
+        for (int j = 0; j < alphabet.size(); j++)
+        {
+            newTrans = new Transition;
+            newTrans->trans = alphabet[j];
+            newTrans->dest = (*FaStates)[(*P)[i].pattern[j]]; // dont even try with this cursed line
+            (*FaStates)[i]->exits.push_back(newTrans);
+        }
+    }
+
+    return FaStates;
 }
 
 static vector<int>* getPattern(Partition source, vector<Transition*> &exits, vector<char> alphabet)
@@ -116,6 +158,6 @@ static bool isSamePattern(vector<int> &p1, vector<int> &p2)
             return false;
     }
 
-    return !(i == p1.end() || j == p2.end());
+    return i == p1.end() && j == p2.end();
 
 }

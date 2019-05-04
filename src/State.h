@@ -8,7 +8,7 @@
 //Single automata State
 typedef struct State {
 public:
-    std::string id;       //Arbitrary state name
+    std::string id="";       //Arbitrary state name
     bool initial = false;   // true if this is an initial state
     bool final = false;     // true if this is a final state
     std::vector<Transition*> exits;      //list of outgoing transitions
