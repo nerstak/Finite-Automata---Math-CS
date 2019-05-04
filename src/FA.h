@@ -6,8 +6,6 @@
 
 #include "State.h"
 
-#define EMPTY '*'
-
 using namespace std;
 
 
@@ -29,7 +27,7 @@ public:
 
     /// Creating FA from a file
     /// \param nameFile Path and name of the file
-    explicit FA(std::string nameFile);
+    explicit FA(const std::string &nameFile);
 
     /// Creating FA from existing states and alphabet
     /// \param states Vector of states
@@ -38,27 +36,27 @@ public:
 
     ~FA();
 
-    void changeName(string name);
-
     /// Copy constructor
     /// \param toCopy FA to copy from
     FA(FA &toCopy);
 
-    void changeName(const string &name);
-
+    ///Displays the automaton
     void display() const;
 
-    void addState(string = "-1");
+    /// Checks if an FA recognizes a given word
+    /// \param word the string to test
+    /// \return True if it is recognized
+    bool recognizeWord(string word);
 
     /// Check if an automate is synchronous
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isSynchronous(const bool display) const;
+    bool isSynchronous(bool display) const;
 
     /// Check if an automate is deterministic
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isDeterministic(const bool display) const;
+    bool isDeterministic(bool display) const;
 
     bool isComplete();
 
@@ -76,9 +74,14 @@ public:
     void runTest();
 
 private:
+    /// Clean the alphabet and the list of states
+    void cleaningFA();
+
     /// Inner function of the constructor from file
     /// \param stream Valid input stream
-    void creatingFAFile(ifstream &stream);
+    /// \param nameFile Name of the file
+    /// \return Integrity of the operation (true: Performed)
+    bool creatingFAFile(ifstream &stream, const std::string &nameFile);
 
     /// Inner function of the copy constructor
     /// \param toCopyStates States of the FA to copy from
@@ -99,6 +102,9 @@ private:
 
     /// Check if the automate is deterministic or not. Should be used after every change in the automate
     void checkDeterministic();
+
+    /// Sort transitions and states. It leads to a better display
+    void sort();
 
     /// Check if the automate is standard or not.
     bool checkStandard();

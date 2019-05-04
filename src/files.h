@@ -15,20 +15,16 @@ static int readUniqueNumber(ifstream &stream);
 
 /// Create states and relationship between all of them
 /// \param stream File stream (read)
-/// \param initialStates List of initial states
-/// \param finalStates List of final states
 /// \param states List of all states
 /// \param alpha Alphabet of the FA
-static void createStates(ifstream &stream, vector<std::string>* initialStates, vector<std::string>* finalStates,
-                         vector<State*> &states, vector<char> &alpha);
+//// \return Number of transition created
+static int createTransitions(ifstream &stream, vector<State*> &states, vector<char> &alpha);
 
-/// Check if the state exists, and if not, create it
+/// Give the attribute 'initial' or 'final' for all concerned states
 /// \param list List of all states
-/// \param state ID of the state
-/// \param init List of initial states
-/// \param final List of final states
-static void checkAndCreateSingleState(vector<State*> &list, std::string state, vector<std::string>* init,
-                                      vector<std::string>* final);
+/// \param init List of initial states (string)
+/// \param final List of final states (string)
+static void giveAttributesStates(vector<State*> &list, const vector<string>* init, const vector<string>* final);
 
 /// Allocate memory for a state
 /// \param id ID of the state (string)
@@ -47,16 +43,32 @@ static void separateTransition(std::string &transitionString, char &c, std::stri
 /// \param stateFromID ID of the initial state of transition
 /// \param stateToID ID of the final state of transition
 /// \param transition Character of transition
-static void createTransition(vector<State*> &list, std::string stateFromID, std::string stateToID, char transition);
+/// \return Integrity of the operation (true: Performed)
+static bool createSingleTransition(vector<State*> &list, const std::string &stateFromID, const std::string &stateToID,
+                                   char transition);
 
 /// Add a character to an alphabet if not in
 /// \param alpha Alphabet of the FA
 /// \param c Character to add
 static void addCharacterToAlphabet(vector<char> &alpha, char c);
 
-/// Count the number of transition from the list of state
-/// \param list Reference of a vector of address of State
-/// \return Number of transition
-static int countTransitions(vector<State*> &list);
+/// Verify if a transition already exists (same character, same destination)
+/// \param stateFrom State from where the transition comes
+/// \param stateTo State where the transition leads
+/// \param c Character of transition
+/// \return true if existing, false if not
+static bool verifyExistence(const State* stateFrom, const State* stateTo, char c);
+
+/// Generate the alphabet of an FA
+/// \param n Number of character present in the alphabet (starting from 'a')
+/// \param alphabet Alphabet of the FA (return by parameter)
+/// \return Integrity of the operation (true: Performed)
+static bool generateAlphabet(int n, vector<char> &alphabet);
+
+/// Generate lit of states of an FA
+/// \param n Number of states present in the FA (starting from 0)
+/// \param list List of all states (return by parameter)
+/// \return Integrity of the operation (true: Performed)
+static bool generateStates(int n, vector<State*> &list);
 
 #endif //FINITE_AUTOMATA_MATH_CS_FILES_H

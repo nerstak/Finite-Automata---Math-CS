@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 #include "Transition.h"
 
 using namespace std;

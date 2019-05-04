@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#define EMPTY '*'
+
 
 // Outgoing transition from a State
 typedef struct Transition {
@@ -20,6 +22,10 @@ typedef struct Transition {
     /// \param c Character to look for
     /// \param recover List of occurrences (return by parameter)
     static void searchOccurrence(const std::vector<Transition*> &list, char c, std::vector<Transition*> &recover);
+
+    /// Sort transition by alphabetical order of character of transition, and if same by ascending order of leading state
+    /// \param list List of transitions
+    static void sortTransitions(std::vector<Transition*> &list);
 } Transition;
 
 

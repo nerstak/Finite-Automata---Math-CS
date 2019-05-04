@@ -14,7 +14,7 @@ Made for the boys and also Windows.
 
 - [ ] Standardization
 - [ ] Complementary Language
-- [ ] Word recognition
+- [x] Word recognition
 - [ ] Minimization
 - [ ] Completion
 - [x] Determinization
