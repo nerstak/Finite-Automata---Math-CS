@@ -70,6 +70,10 @@ public:
     /// \return Address of the determinized FA
     FA* determinize();
 
+    /// Complementarize an FA
+    /// \return Address of the determinized FA
+    FA* complementarize();
+
     /// Run every checkX
     void runTest();
 
