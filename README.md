@@ -12,8 +12,9 @@ Made for the boys and also Windows.
 
 ## Features
 
-- [ ] Standardization
-- [ ] Complementary Language
+- [ ] Main loop
+- [x] Standardization
+- [x] Complementary Language
 - [x] Word recognition
 - [ ] Minimization
 - [ ] Completion
