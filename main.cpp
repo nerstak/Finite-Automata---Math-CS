@@ -3,10 +3,10 @@
 #include "src/files.h"
 
 int main() {
-    string lmao = "automata/L2Int1-7-32.txt";
+    string lmao = "automata/L2Int1-7-41.txt";
     FA fa(lmao);
     fa.display();
-    FA* fa2 = fa.determinize();
+    FA* fa2 = fa.complementarize();
     fa2->display();
 
    /**

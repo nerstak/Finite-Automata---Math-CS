@@ -5,6 +5,7 @@ project(Finite_Automata___Math_CS) # Project name
 # List of cpp files
 set(SRC
         main.cpp
+        src/complementary.cpp
         src/determinization.cpp
         src/FA.cpp
         src/files.cpp
