@@ -25,7 +25,7 @@ determinizationProcess_Sync(vector<State*> &presentStates, const vector<char> &a
 static State*
 determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &alphabet,
                              const vector<State*> &sameStates,
-                             const vector<State*> &init, const vector<State*> &fin);
+                             const vector<State*> &init);
 
 /// Initialise a state
 /// \param presentStates List of actual states (return by parameter)

@@ -12,6 +12,8 @@ set(SRC
         src/reading.cpp
         src/standardization.cpp
         src/State.cpp
+        src/reading.cpp
+        src/minimization.cpp
         src/Transition.cpp)
 
 # List of h files
@@ -20,6 +22,8 @@ set(HDR
         src/FA.h
         src/files.h
         src/State.h
+        src/reading.h
+        src/minimization.h
         src/Transition.h)
 
 

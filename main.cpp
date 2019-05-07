@@ -35,5 +35,10 @@ int main() {
         cout << "reco: *a*a" << endl;
     if(Aut.recognizeWord("baaaa")) //yes
         cout << "reco: *baaaa" << endl;**/
+
+    string B_emoji="automata/testMin.txt";
+    FA min(B_emoji);
+    min.display();
+    min.minimize()->display();
     return 0;
 }
