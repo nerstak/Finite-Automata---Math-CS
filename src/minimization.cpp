@@ -3,40 +3,59 @@
 
 FA* FA::minimize()
 {
-    //TODO prevent Non deterministic, Non complete FA + add comments
-    Partition P = new vector<PatternGroup>;
-    P->resize(2);
 
-    for (State* St: _states)
+    if (!_completed && _determinized)
     {
-        if (St->final)
+        Partition P = new vector<PatternGroup>;
+        PatternGroup Finals, NonFinals;
+
+        //The initial Partition is the F and NF states
+        for (State* St: _states)
         {
-            (*P)[0].group.push_back(St); //Final
-        } else
-        {
-            (*P)[1].group.push_back(St); //NonFinal
+            if (St->final)
+            {
+                Finals.group.push_back(St); //Final
+            } else
+            {
+                NonFinals.group.push_back(St); //NonFinal
+            }
         }
+        if (!NonFinals.group.empty())
+        {
+            P->push_back(NonFinals);
+        }
+        if (!Finals.group.empty())
+        {
+            P->push_back(Finals);
+        }
+
+
+        P = partitioning(P, _alphabet);
+
+        //Creates a new FA from a list of states
+        FA* newAuto = new FA;
+
+        newAuto->_states = *Partition2States(P, _alphabet);
+        newAuto->_alphabet = _alphabet;
+        newAuto->_completed = true;
+        newAuto->_determinized = true;
+        newAuto->_minimized = true;
+        newAuto->_synchronous = true;
+        newAuto->_name = "Minimized " + _name;
+
+        return newAuto;
+    } else
+    {
+        cout << "FA must be Complete and Deterministic" << endl;
+        return nullptr;
     }
 
-    P = partitioning(P, _alphabet);
-
-    FA* newAuto = new FA;
-
-    newAuto->_states = *Partition2States(P, _alphabet);
-    newAuto->_alphabet = _alphabet;
-    newAuto->_completed = true;
-    newAuto->_determinized = true;
-    newAuto->_minimized = true;
-    newAuto->_synchronous = true;
-    newAuto->_name = "Minimized " + _name;
-
-    return newAuto;
 }
 
 
 static Partition partitioning(Partition P, vector<char> alphabet)
 {
-    vector<Partition> AllParts;
+    vector <Partition> AllParts;
     vector<int>* patt;
     Partition nextP;
     PatternGroup* newPattGroup;
@@ -76,10 +95,15 @@ static Partition partitioning(Partition P, vector<char> alphabet)
         nextP->insert(nextP->end(), Part->begin(), Part->end());
     }
 
-
+    //clear it up
+    AllParts.clear();
     if (nextP->size() > P->size())
     {
-        //TODO Clear P but good
+        for(PatternGroup curg : *P)
+        {
+            curg.group.clear();
+            curg.pattern.clear();
+        }
         P->clear();
 
         nextP = partitioning(nextP, alphabet);
@@ -90,27 +114,34 @@ static Partition partitioning(Partition P, vector<char> alphabet)
 
 static vector<State*>* Partition2States(Partition P, vector<char> &alphabet)
 {
-    vector<State*>* FaStates = new vector<State*>;
+    vector < State * > *FaStates = new vector<State*>;
     State* newSt;
 
-    for (PatternGroup curG : *P)
+    //Print the table of Association
+    cout << endl << "   Table of Association:" << endl << endl;
+    for (int l = 0; l < P->size(); l++)
     {
         newSt = new State;
-        for (State* curSt : curG.group)
+        newSt->id= to_string(l);
+        cout<< " " << l << ":    ";
+
+        for (State* curSt : (*P)[l].group)
         {
-            if (curSt != curG.group[0])
+            if (curSt != (*P)[l].group[0])
             {
-                newSt->id += "+";
+                cout << " + ";
             }
-            newSt->id += curSt->id;
+            cout << curSt->id;
         }
-        newSt->initial = State::isAnyInitial(curG.group);
-        newSt->final = State::isAnyFinal(curG.group);
+        cout << endl;
+        newSt->initial = State::isAnyInitial((*P)[l].group);
+        newSt->final = State::isAnyFinal((*P)[l].group);
         FaStates->push_back(newSt);
     }
 
     Transition* newTrans;
 
+    //Sets up proper Transitions
     for (int i = 0; i < FaStates->size(); i++)
     {
         for (int j = 0; j < alphabet.size(); j++)
@@ -132,6 +163,7 @@ static vector<int>* getPattern(Partition source, vector<Transition*> &exits, vec
     {
         for (Transition* T : exits)
         {
+            //This makes sure that the pattern order is consistant
             if (T->trans == c)
             {
                 for (int i = 0; i < source->size(); i++)
