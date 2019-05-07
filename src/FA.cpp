@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "FA.h"
+#include "completion.h"
 
 using namespace std;
 
@@ -49,24 +50,16 @@ FA::FA(vector<State*> &states, vector<char> &alphabet) {
     _states = states;
     _alphabet = alphabet;
     _name = "Finite Automata (from file)";
-
-    sort();
     runTest();
 }
 
 FA::~FA() {
-    cleaningFA();
-}
-
-void FA::cleaningFA() {
     for (State* st: _states) {
         for (Transition* t: st->exits) {
             delete (t);
         }
         delete (st);
     }
-    _alphabet.clear();
-    _states.clear();
 }
 
 void FA::display() const {
@@ -116,8 +109,94 @@ void FA::display() const {
     cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
 }
 
+
+void FA::addState(string ID) {
+    State* St = new State;
+    string
+            x;
+    char c, letter;
+    bool exists;
+    Transition* newT = nullptr;
+
+
+
+    //Asks for state ID if it wasn't already given
+    if (ID == "-1") {
+        cout << "State ID: ";
+        cin >> ID;
+    }
+    St->id = ID;
+
+    //sets if the FA is initial or final
+    cout << "Is state " << St->id << " initial (y/n): ";
+    cin >> c;
+    St->initial = c == 'y';
+
+
+    cout << "Is state " << St->id << " final (y/n): ";
+    cin >> c;
+    St->final = c == 'y';
+
+    //adds generated state to full list
+    _states.push_back(St);
+
+    do {
+        //display automata
+        display();
+
+        cout << "Add another transition from state " << St->id << " ? (y/n)";
+        cin >> c;
+        if (c == 'y') {
+            cout << "Transition Character: ";
+            cin >> letter;
+
+            //tries to find the transition character in the alphabet, if it does not exist, generate it
+            if (find(_alphabet.begin(), _alphabet.end(), letter) == _alphabet.end()) {
+                _alphabet.push_back(letter);
+            }
+
+            cout << "Transition destination state: ";
+            cin >> x;
+
+            //Tries to find the destination state, if it does not exist, creates it
+            if (State::searchById(_states, x) == nullptr) {
+                cout << endl << "    This is a new transition, making a new state... " << endl << endl;
+                //recursion <3<3<3<3
+                addState(x);
+            }
+
+            //creates a Transition and adds it to the list
+            newT = new Transition;
+
+            newT->trans = letter;
+            newT->dest = State::searchById(_states, x);
+
+            //if the transition already exists, it does not add it
+            exists = false;
+            for (Transition* exitStates : St->exits) {
+                if (exitStates->trans == newT->trans && exitStates->dest == newT->dest) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                St->exits.push_back(newT);
+            }
+        }
+    } while (c == 'y');
+
+}
+
+void FA::changeName(const string &name) {
+    _name = name;
+}
+
+
+
 extern string concatenateID(vector<State*> sameStates) {
-    State::sortStates(sameStates);
+    sort(sameStates.begin(), sameStates.end(),
+         [](const State* st1, const State* st2) -> bool { return stoi(st1->id) < stoi(st2->id); });
     string newID;
     for (State* st: sameStates) {
         if (!newID.empty()) { newID += "."; }
@@ -245,15 +324,13 @@ void FA::checkDeterministic() {
     _determinized = det;
 }
 
+void FA::completion(FA fa){
+    if (fa.isDeterministic()== true){
+        completionProcess(fa, fa._states, fa._alphabet);
+    }
+}
+
 void FA::runTest() {
     checkSynchronous();
     checkDeterministic();
-}
-
-void FA::sort() {
-    std::sort(_alphabet.begin(), _alphabet.end());
-    State::sortStates(_states);
-    for (State* st: _states) {
-        Transition::sortTransitions(st->exits);
-    }
 }
