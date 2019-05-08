@@ -275,17 +275,49 @@ bool FA::checkStandard(){
 
 }
 
-
-void FA::runTest() {
-    checkSynchronous();
-    checkDeterministic();
-    checkStandard();
-}
-
 void FA::sort() {
     std::sort(_alphabet.begin(), _alphabet.end());
     State::sortStates(_states);
     for (State* st: _states) {
         Transition::sortTransitions(st->exits);
     }
+}
+
+bool FA::isComplete(const bool display = false) const {
+    if (display) {
+        cout << "Is Automaton Complete ? " << boolalpha << _completed << endl;
+        if (!_completed) {
+            if (!_determinized) {
+                cout << "Automate is simply not determinized. It has to be determinized in order to be complete"
+                     << endl;
+            }
+        }
+    }
+    return _completed;
+}
+
+void FA::checkComplete() {
+    bool comp = true;
+    if (_determinized) {
+        for (State* st: _states) {
+            for (char c: _alphabet) {
+                vector<Transition*> occurrences;
+                Transition::searchOccurrence(st->exits, c, occurrences);
+                if (occurrences.size() != 1) {
+                    comp = false;
+                    break;
+                }
+            }
+        }
+    } else {
+        comp = false;
+    }
+    _completed = comp;
+}
+
+void FA::runTest() {
+    checkSynchronous();
+    checkDeterministic();
+    checkComplete();
+    checkStandard();
 }

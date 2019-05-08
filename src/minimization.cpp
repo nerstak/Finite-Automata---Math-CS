@@ -3,8 +3,7 @@
 
 FA* FA::minimize()
 {
-
-    if (!_completed && _determinized)
+    if (_completed && _determinized)
     {
         Partition P = new vector<PatternGroup>;
         PatternGroup Finals, NonFinals;

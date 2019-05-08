@@ -3,11 +3,15 @@
 #include "src/files.h"
 
 int main() {
-    string lmao = "automata/L2Int1-7-41.txt";
+    string lmao = "automata/L2Int1-7-36.txt";
     FA fa(lmao);
     fa.display();
-    FA* fa2 = fa.complementarize();
-    fa2->display();
+    FA* fx = fa.determinize();
+    FA* fg = fx->completion();
+    fx->display();
+    fg->display();
+    fg->complementarize()->display();
+    fg->minimize()->display();
 
    /**
     string Yoo="automata/test/test4.txt";
@@ -36,9 +40,6 @@ int main() {
     if(Aut.recognizeWord("baaaa")) //yes
         cout << "reco: *baaaa" << endl;**/
 
-    string B_emoji="automata/testMin.txt";
-    FA min(B_emoji);
-    min.display();
-    min.minimize()->display();
+
     return 0;
 }

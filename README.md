@@ -17,7 +17,7 @@ Made for the boys and also Windows.
 - [x] Complementary Language
 - [x] Word recognition
 - [ ] Minimization
-- [ ] Completion
+- [x] Completion
 - [x] Determinization
 - [x] (A)Synchronous FA
 - [x] Displaying FA

@@ -58,7 +58,8 @@ public:
     /// \return bool
     bool isDeterministic(bool display) const;
 
-    bool isComplete();
+    /// Says to the user if the automate is complete
+    bool isComplete(const bool display) const;
 
     FA* minimize();
 
@@ -69,6 +70,11 @@ public:
     /// Determinize an FA
     /// \return Address of the determinized FA
     FA* determinize();
+
+
+    /// Enhances a Deterministic Automaton and makes it being complete
+    /// \return Address of the completed FA
+    FA* completion();
 
     /// Complementarize an FA
     /// \return Address of the determinized FA
@@ -106,6 +112,9 @@ private:
 
     /// Check if the automate is deterministic or not. Should be used after every change in the automate
     void checkDeterministic();
+
+    ///Check if the automate is complete or not. Should be used after every change in the automate
+    void checkComplete();
 
     /// Sort transitions and states. It leads to a better display
     void sort();

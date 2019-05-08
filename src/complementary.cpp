@@ -9,12 +9,11 @@ FA* FA::complementarize() {
             cout << " just completed version." << endl;
         }
 
-        vector<State*> newList = _states;
-        for (State* st: newList) {
+        FA* complementary = new FA(*this);
+        for (State* st: complementary->_states) {
             st->final = !(st->final);
         }
 
-        FA* complementary = new FA(newList, _alphabet);
         complementary->_name = _name + " Complementary";
 
         return complementary;
