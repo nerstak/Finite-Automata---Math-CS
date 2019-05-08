@@ -1,17 +1,12 @@
-//
-// Created by gmaza on 03/05/2019.
-//
-
 #ifndef FINITE_AUTOMATA___MATH_CS_COMPLETION_H
 #define FINITE_AUTOMATA___MATH_CS_COMPLETION_H
 
 #include "FA.h"
-///Makes the completion.
-/// \&list is the list of states of the fa that has to be complete, \&alphabet its alphabet
-void static
-completionProcess(vector<State*> &list, const vector<char> &alphabet);
 
-
+/// Make completion
+/// \param list List of states of FA to complete
+/// \param alphabet Alphabet of the FA
+static void completionProcess(vector<State*> &list, const vector<char> &alphabet);
 
 
 #endif //FINITE_AUTOMATA___MATH_CS_COMPLETION_H
