@@ -18,10 +18,10 @@ void static completionProcess(vector<State*> &list, const vector<char> &alphabet
     for (State *st: list) {
         for (char c : alphabet) {
             //Checking all alphabet for each state, to see if there are empty transitions. If yes, adds P as a transition.
-            Transition T;
+            Transition* T;
             if (Transition::searchByCharacter(st->exits,c) == nullptr) {
-                T.dest = P;
-                T.trans = c;
+                T->dest = P;
+                T->trans = c;
                 st->exits.push_back(T);
                 isPUsed = true; //As P has been used in this process
             }
