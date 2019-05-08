@@ -4,7 +4,7 @@
 FA* FA::minimize()
 {
 
-    if (!_completed && _determinized)
+    if (_completed && _determinized)
     {
         Partition P = new vector<PatternGroup>;
         PatternGroup Finals, NonFinals;
@@ -36,6 +36,7 @@ FA* FA::minimize()
         FA* newAuto = new FA;
 
         newAuto->_states = *Partition2States(P, _alphabet);
+        deletePartition(P);
         newAuto->_alphabet = _alphabet;
         newAuto->_completed = true;
         newAuto->_determinized = true;
@@ -55,10 +56,11 @@ FA* FA::minimize()
 
 static Partition partitioning(Partition P, vector<char> alphabet)
 {
-    vector <Partition> AllParts;
+    vector<Partition> AllParts;
     vector<int>* patt;
     Partition nextP;
     PatternGroup* newPattGroup;
+    int sizeP = P->size();
     vector<PatternGroup>::iterator EndPattGroups;
 
 
@@ -68,6 +70,7 @@ static Partition partitioning(Partition P, vector<char> alphabet)
 
         for (State* St : Pgroup.group)
         {
+            //If the pattern of the current state matches one in an existing group, it joins that group, otherwise it creates a new one
             patt = getPattern(P, St->exits, alphabet);
             for (EndPattGroups = nextP->begin(); EndPattGroups != nextP->end(); ++EndPattGroups)
             {
@@ -85,6 +88,7 @@ static Partition partitioning(Partition P, vector<char> alphabet)
                 nextP->push_back(*newPattGroup);
             }
         }
+        //It is important to have a vector of partitions since similar patterns shouldn't mix while partitioning if they come from different initial pattern groups
         AllParts.push_back(nextP);
     }
 
@@ -96,16 +100,19 @@ static Partition partitioning(Partition P, vector<char> alphabet)
     }
 
     //clear it up
-    AllParts.clear();
-    if (nextP->size() > P->size())
+    //(I dont really know when to use 'delete' so im kinda just yeeting it all lmaoooo)
+    deletePartition(P);
+    for (Partition part:AllParts)
     {
-        for(PatternGroup curg : *P)
-        {
-            curg.group.clear();
-            curg.pattern.clear();
-        }
-        P->clear();
+        deletePartition(part);
+    }
+    delete &AllParts;
 
+
+    //If it is the same size, it means no additional partitioning is possible so it should return the latest partition
+    //(since that latest partition and the previous one are the same, the patterns point to the correct indexes in the latest partition)
+    if (nextP->size() > sizeP)
+    {
         nextP = partitioning(nextP, alphabet);
     }
 
@@ -114,16 +121,16 @@ static Partition partitioning(Partition P, vector<char> alphabet)
 
 static vector<State*>* Partition2States(Partition P, vector<char> &alphabet)
 {
-    vector < State * > *FaStates = new vector<State*>;
+    vector<State*>* FaStates = new vector<State*>;
     State* newSt;
 
-    //Print the table of Association
+    //Creates correct state names at the right index and print the table of Association
     cout << endl << "   Table of Association:" << endl << endl;
     for (int l = 0; l < P->size(); l++)
     {
         newSt = new State;
-        newSt->id= to_string(l);
-        cout<< " " << l << ":    ";
+        newSt->id = to_string(l);
+        cout << " " << l << ":    ";
 
         for (State* curSt : (*P)[l].group)
         {
@@ -134,6 +141,7 @@ static vector<State*>* Partition2States(Partition P, vector<char> &alphabet)
             cout << curSt->id;
         }
         cout << endl;
+        //If there is a final/initial state in the pattern group, the new state is final/initial
         newSt->initial = State::isAnyInitial((*P)[l].group);
         newSt->final = State::isAnyFinal((*P)[l].group);
         FaStates->push_back(newSt);
@@ -146,9 +154,14 @@ static vector<State*>* Partition2States(Partition P, vector<char> &alphabet)
     {
         for (int j = 0; j < alphabet.size(); j++)
         {
+            // For each state, it creates the transitions. To do this, it goes through every character and for each one,
+            // it looks at the group it was made from in the original partition, it looks at that groups pattern,
+            // by looking at said character's transition in this pattern, it find the index of the pattern group it was connected to.
+            // This index is equivalent to the index of its corresponding state in the new list of state and hence,
+            // we can finally access that state to add it as a transition
             newTrans = new Transition;
             newTrans->trans = alphabet[j];
-            newTrans->dest = (*FaStates)[(*P)[i].pattern[j]]; // dont even try with this cursed line
+            newTrans->dest = (*FaStates)[(*P)[i].pattern[j]];
             (*FaStates)[i]->exits.push_back(newTrans);
         }
     }
@@ -163,11 +176,12 @@ static vector<int>* getPattern(Partition source, vector<Transition*> &exits, vec
     {
         for (Transition* T : exits)
         {
-            //This makes sure that the pattern order is consistant
+            //This 'if' makes sure that the pattern order is consistant
             if (T->trans == c)
             {
                 for (int i = 0; i < source->size(); i++)
                 {
+                    //Looks at the source Partition's patternGroups to find one in which the destination state exists. it adds its index in transitions
                     if (State::searchById((*source)[i].group, T->dest->id))
                     {
                         newpatt->push_back(i);
@@ -192,4 +206,15 @@ static bool isSamePattern(vector<int> &p1, vector<int> &p2)
 
     return i == p1.end() && j == p2.end();
 
+}
+
+static void deletePartition(Partition P)
+{
+    for (PatternGroup curg : *P)
+    {
+        delete &curg.group;
+        delete &curg.pattern;
+        delete &curg;
+    }
+    delete P;
 }

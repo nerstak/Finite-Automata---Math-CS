@@ -3,11 +3,11 @@
 
 #include "FA.h"
 
-
+//A pattern group is what ultimately becomes a state at the end of minimization
 typedef struct PatternGroup
 {
-    vector<State*> group;
-    vector<int> pattern;
+    vector<State*> group; // The States that come from the same original pattern group that share the same pattern
+    vector<int> pattern; // This is a list of indexes reffering to this pattern's group exit destinations in the previous partition
 } PatternGroup;
 
 typedef vector<PatternGroup>* Partition;
@@ -37,6 +37,8 @@ static vector<int>* getPattern(Partition source, vector<Transition*> &exits, vec
 /// \param p2 Pattern 2
 /// \return True if they are the same
 static bool isSamePattern(vector<int> &p1, vector<int> &p2);
+
+static void deletePartition(Partition P);
 
 
 #endif //FINITE_AUTOMATA_MATH_CS_MINIMIZATION_H
