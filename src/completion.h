@@ -7,8 +7,8 @@
 
 #include "FA.h"
 
-static FA
-completionProcess(FA fa, vector<State*> &presentStates, const vector<char> &alphabet);
+void static
+completionProcess(vector<State*> &list, const vector<char> &alphabet);
 
 
 

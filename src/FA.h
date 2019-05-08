@@ -59,7 +59,7 @@ public:
     /// \return bool
     bool isDeterministic(const bool display) const;
 
-    bool isComplete();
+    bool isComplete(const bool display) const;
 
     FA* minimize();
 
@@ -96,7 +96,9 @@ private:
     void checkDeterministic();
 
     ///Enhances a Deterministic Automaton and makes it being complete
-    void completion(FA fa);
+    FA* completion(FA fa);
+
+    void checkComplete();
 };
 
 /// Generate an ID from a list of states

@@ -324,13 +324,53 @@ void FA::checkDeterministic() {
     _determinized = det;
 }
 
-void FA::completion(FA fa){
+FA* FA::completion(FA fa){
+    //Check if fa is deterministic, to make the completion
     if (fa.isDeterministic()== true){
-        completionProcess(fa, fa._states, fa._alphabet);
+        vector<State*> _temp = _states; //Creation of a temp value, that will contain the list of states of fa
+        completionProcess(_temp,_alphabet); //Makes the completion
+        FA* newFA = new FA(_temp,_alphabet); //Creates a new FA that will be complete
+        return newFA;
     }
+    //if fa is not :
+    else{
+        cout << "Your Finite Automaton is not deterministic, it is impossible to complete it" << endl;
+    }
+
+}
+
+void FA::checkComplete() {
+    bool comp = false;
+    if (_determinized){
+        if (_completed){
+            for (State* st:_states){
+                for (char c : _alphabet){
+                    if (Transition::searchByCharacter(st->exits,c)==nullptr){
+                        goto exit;
+                    }
+                }
+            }
+            comp = true;
+        }
+    }
+    exit:
+    _completed = comp;
+}
+
+bool FA::isComplete(const bool display = false) const {
+    if (display){
+        cout << "Is Automaton Complete ? " << boolalpha << _completed << endl;
+        if (!_completed){
+            if(!_determinized){
+                cout << "Automate is simply not determinized. It has to be determinized in order to be complete" << endl;
+            }
+        }
+    }
+    return _completed;
 }
 
 void FA::runTest() {
     checkSynchronous();
     checkDeterministic();
+    checkComplete();
 }
