@@ -59,6 +59,7 @@ public:
     /// \return bool
     bool isDeterministic(const bool display) const;
 
+    /// Says to the user if the automate is complete
     bool isComplete(const bool display) const;
 
     FA* minimize();
@@ -98,6 +99,7 @@ private:
     ///Enhances a Deterministic Automaton and makes it being complete
     FA* completion(FA fa);
 
+    ///Check if the automate is complete or not.
     void checkComplete();
 };
 

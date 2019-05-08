@@ -343,10 +343,11 @@ void FA::checkComplete() {
     bool comp = false;
     if (_determinized){
         if (_completed){
+            // If the FA is determinized and appears to be complete, we then check all transitions to see if it really is.
             for (State* st:_states){
                 for (char c : _alphabet){
                     if (Transition::searchByCharacter(st->exits,c)==nullptr){
-                        goto exit;
+                        goto exit; // Goes to the exit of the program, and keeps "comp" being false, as we found an empty transition.
                     }
                 }
             }

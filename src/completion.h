@@ -6,7 +6,8 @@
 #define FINITE_AUTOMATA___MATH_CS_COMPLETION_H
 
 #include "FA.h"
-
+///Makes the completion.
+/// \&list is the list of states of the fa that has to be complete, \&alphabet its alphabet
 void static
 completionProcess(vector<State*> &list, const vector<char> &alphabet);
 
