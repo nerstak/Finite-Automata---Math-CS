@@ -99,14 +99,6 @@ private:
     /// \return Address of the state (used only for recursion)
     State* copyStatesProcess(std::vector<State*> &toCopyStates, const string &newID);
 
-    /// Process of determinization of a Sync Automate
-    /// \return Address of the determinized automate
-    FA* determinization_Sync();
-
-    /// Process of determinization of an Async Automate
-    /// \return Address of the determinized automate
-    FA* determinization_Async();
-
     /// Check if the automate is synchronous or not. Should be used after every change in the automate
     void checkSynchronous();
 

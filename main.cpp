@@ -7,6 +7,7 @@ int main() {
     FA fa(lmao);
     fa.display();
     FA* fx = fa.determinize();
+    fx->isSynchronous(true);
     FA* fg = fx->completion();
     fx->display();
     fg->display();

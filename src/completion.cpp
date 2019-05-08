@@ -9,6 +9,7 @@ FA* FA::completion() {
         completionProcess(newFA->_states, newFA->_alphabet); // Makes the completion
         newFA->sort();
         newFA->_completed = true;
+        newFA->_name = _name + " Complete";
         return newFA;
     } else if (_completed) {
         return this;

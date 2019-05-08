@@ -2,9 +2,17 @@
 #include "determinization.h"
 
 static State*
-determinizationProcess_Sync(vector<State*> &presentStates, const vector<char> &alphabet,
-                            const vector<State*> &sameStates,
-                            const vector<State*> &init, const vector<State*> &fin) {
+determinizationProcess(vector<State*> &presentStates, const vector<char> &alphabet, const vector<State*> &sameStates,
+                       const vector<State*> &init,
+                       const vector<State*> &fin, const bool sync) {
+    bool isInit = init == sameStates;
+
+    vector<State*> groupState = sameStates;
+    if (!sync) {
+        // Recovering every state accessible with empty transition
+        State::groupEmpty(groupState);
+    }
+
     // Naming the new state
     string newID = concatenateID(sameStates);
     // Checking if the state isn't already there
@@ -14,59 +22,7 @@ determinizationProcess_Sync(vector<State*> &presentStates, const vector<char> &a
     }
 
     // Allocation of the state, and giving it its properties
-    State* actual = initStateDet(presentStates, sameStates, init, newID);
-
-    // Merging transitions with the same character
-    for (auto c: alphabet) {
-        vector<State*> sameFinalState;
-        locatingSameTransition(sameFinalState, sameStates, c);
-        // Creating the transition, with the character and the address of the terminal state
-        if (!sameFinalState.empty()) {
-            Transition* tr = new Transition;
-            tr->trans = c;
-            tr->dest = determinizationProcess_Sync(presentStates, alphabet, sameFinalState, init, fin);
-            actual->exits.push_back(tr);
-        }
-    }
-    return actual;
-}
-
-FA* FA::determinization_Sync() {
-    if (_determinized) {
-        return this;
-    }
-
-    vector<State*> initials, finals, states;
-
-    // Recovering final and initial states
-    State::recoverSpecials(_states, &initials, &finals);
-
-    determinizationProcess_Sync(states, _alphabet, initials, initials, finals);
-
-    // Creating the FA in itself
-    FA* determinized = new FA(states, _alphabet);
-    determinized->_name = _name + " Determinized";
-    return determinized;
-}
-
-static State*
-determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &alphabet,
-                             const vector<State*> &sameStates,
-                             const vector<State*> &init) {
-    // Recovering every state accessible with empty transition
-    vector<State*> groupState = sameStates;
-    State::groupEmpty(groupState);
-
-    // Naming the new state
-    string newID = concatenateID(groupState);
-    // Checking if the state isn't already there
-    auto search = State::searchById(presentStates, newID);
-    if (search != nullptr) {
-        return search;
-    }
-
-    // Allocation of the state, and giving it its properties
-    State* actual = initStateDet(presentStates, groupState, init, newID);
+    State* actual = initStateDet(presentStates, groupState, isInit, newID);
 
     // Merging transitions with the same character
     for (auto c: alphabet) {
@@ -76,20 +32,24 @@ determinizationProcess_Async(vector<State*> &presentStates, const vector<char> &
         if (!sameFinalState.empty()) {
             Transition* tr = new Transition;
             tr->trans = c;
-            tr->dest = determinizationProcess_Async(presentStates, alphabet, sameFinalState, init);
+            tr->dest = determinizationProcess(presentStates, alphabet, sameFinalState, init, fin, sync);
             actual->exits.push_back(tr);
         }
     }
     return actual;
 }
 
-FA* FA::determinization_Async() {
-    vector<State*> initials, states;
+FA* FA::determinize() {
+    if (_determinized) {
+        return this;
+    }
+
+    vector<State*> initials, finals, states;
 
     // Recovering final and initial states
-    State::recoverSpecials(_states, &initials, nullptr);
+    State::recoverSpecials(_states, &initials, &finals);
 
-    determinizationProcess_Async(states, _alphabet, initials, initials);
+    determinizationProcess(states, _alphabet, initials, initials, finals, _synchronous);
 
     // Creating the FA in itself
     FA* determinized = new FA(states, _alphabet);
@@ -97,21 +57,13 @@ FA* FA::determinization_Async() {
     return determinized;
 }
 
-FA* FA::determinize() {
-    if (_synchronous) {
-        return determinization_Sync();
-    } else {
-        return determinization_Async();
-    }
-}
-
 static State*
-initStateDet(vector<State*> &presentStates, const vector<State*> &sameStates, const vector<State*> &init,
+initStateDet(vector<State*> &presentStates, const vector<State*> &sameStates, const bool init,
              const string &newID) {
     // Creating the state
     State* actual = new State;
     actual->id = newID;
-    actual->initial = sameStates == init;
+    actual->initial = init;
     actual->final = State::isAnyFinal(sameStates);
     presentStates.push_back(actual);
     return actual;
