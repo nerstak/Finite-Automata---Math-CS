@@ -16,7 +16,7 @@ typedef vector<PatternGroup>* Partition;
 /// \param P initial partition
 /// \param alphabet Initial FA alphabet
 /// \return Final Partition
-static Partition partitioning(Partition P, vector<char> alphabet);
+static Partition partitioning(Partition P, vector<char> alphabet, int n);
 
 /// Turns a partition into a list of states
 /// \param P Partition
@@ -39,6 +39,14 @@ static vector<int>* getPattern(Partition source, vector<Transition*> &exits, vec
 /// \return True if they are the same
 static bool isSamePattern(vector<int> &p1, vector<int> &p2);
 
+/// Displays A partitions and it's pattern groups
+/// \param P Partition to display
+/// \param n Partition number. -1 for final Partition
+/// \param alphabet Alphabet of original FA
+static void displayPartition(Partition P, int n, vector<char> alphabet);
+
+/// Deletes a partition from memory
+/// \param P Partition to delete
 static void deletePartition(Partition P);
 
 

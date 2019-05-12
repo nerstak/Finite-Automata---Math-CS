@@ -40,7 +40,6 @@ int main() {
 
     string B_emoji="automata/testMin.txt";
     FA min(B_emoji);
-    min.display();
     min.minimize()->display();
     return 0;
 }
