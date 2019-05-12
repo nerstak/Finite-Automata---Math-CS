@@ -21,8 +21,9 @@ static Partition partitioning(Partition P, vector<char> alphabet);
 /// Turns a partition into a list of states
 /// \param P Partition
 /// \param alphabet initial Fa alphabet
+/// \param TTable Transition table of the new FA
 /// \return List of States
-static vector<State*>* Partition2States(Partition P, vector<char> &alphabet);
+static vector<State*>* Partition2States(Partition P, vector<char> &alphabet, stringstream &CTable);
 
 /// Get the pattern of a State in a Partition
 /// \param source The previous Partition
