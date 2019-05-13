@@ -79,6 +79,9 @@ void FA::display() const {
 
     State* curSt;
 
+    //Print the correspondence table if it isnt empty
+    cout << endl << _correspondence.str();
+
     cout << endl << " - - - - - - - - - - - - - - - - - - - - - " << endl;
     cout << "          FA: " << _name << endl << endl;
     for (i = 0; i < st_size; i++) {

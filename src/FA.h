@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 #include "State.h"
 
@@ -14,6 +15,8 @@ private:
     string _name = "Finite automata";           //Arbitrary name
     vector<State*> _states;  //List of all the automaton's states
     vector<char> _alphabet;
+
+    stringstream _correspondence;
 
     // Shows if in its current state the automaton is minimized/determinized/complete
     bool _minimized = false;
