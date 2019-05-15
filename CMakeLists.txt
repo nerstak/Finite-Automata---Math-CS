@@ -27,7 +27,7 @@ set(HDR
         src/State.h
         src/reading.h
         src/minimization.h
-        src/Transition.h)
+        src/Transition.h src/mainLoop.cpp src/mainLoop.h)
 
 set(CMAKE_CXX_STANDARD 17) # Version of C++
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../) # Output in root folder

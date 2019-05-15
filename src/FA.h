@@ -61,6 +61,8 @@ public:
     /// Says to the user if the automate is complete
     bool isComplete(const bool display) const;
 
+    bool isStandard();
+
     FA* minimize();
 
     ///Standardize an FA
@@ -82,6 +84,8 @@ public:
 
     /// Run every checkX
     void runTest();
+
+    std::string getName();
 
 private:
     /// Clean the alphabet and the list of states

@@ -219,6 +219,11 @@ bool FA::isDeterministic(const bool display = false) const {
     return _determinized;
 }
 
+bool FA::isStandard(){
+    this->_standard = this->checkStandard();
+    return !this->_standard;
+}
+
 void FA::checkDeterministic() {
     bool det = false;
     if (_synchronous) {
@@ -320,4 +325,8 @@ void FA::runTest() {
     checkDeterministic();
     checkComplete();
     checkStandard();
+}
+
+std::string FA::getName() {
+    return _name;
 }
