@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12) # Version for CMake
+cmake_minimum_required(VERSION 3.6) # Version for CMake
 project(Finite_Automata___Math_CS) # Project name
 
 #List of files

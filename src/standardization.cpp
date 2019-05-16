@@ -4,7 +4,7 @@
 FA* FA::standardize() {
 
     //First, check if the Automata isn't already standard, in order to not create new state.
-    if(!this->checkStandard()){
+    if (_standard) {
         cout << "Already standardization." << endl;
         return this;
     }

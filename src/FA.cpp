@@ -219,9 +219,27 @@ bool FA::isDeterministic(const bool display = false) const {
     return _determinized;
 }
 
-bool FA::isStandard(){
-    this->_standard = this->checkStandard();
-    return !this->_standard;
+bool FA::isStandard(const bool display = false) const {
+    if (display) {
+        cout << "Is Automate Standard? " << boolalpha << _standard << endl;
+        if (!_standard) {
+            vector<State*>* initials = new vector<State*>;
+            State::recoverSpecials(_states, initials, nullptr);
+            if (initials->size() != 1) {
+                cout << "There should be only one initial state" << endl;
+            } else {
+                for (State* st: _states) {
+                    for (Transition* tr: st->exits) {
+                        if (tr->dest == (*initials)[0]) {
+                            cout << "Transition leading to initial State" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return _standard;
 }
 
 void FA::checkDeterministic() {
@@ -252,31 +270,22 @@ void FA::checkDeterministic() {
 
 
 bool FA::checkStandard(){
-    // THE BOOLEAN RETURNED TELL IF THE FA IS STANDARDIZABLE
-
-    // 2 case to standardize : +2 initials states and 1 initial state with a transition ending to this one.
-    int count = 0;
-
-    //We go through the states
-    for(State* st: this->_states){
-
-        //if there are more than 2 initials states, the FA isn't standard
-        if(st->initial){
-            count++;
-            if(count==2)
-                return true;
+    bool std = true;
+    auto init = new vector<State*>;
+    State::recoverSpecials(_states, init, nullptr);
+    if (init->size() == 1) {
+        for (State* st: _states) {
+            for (Transition* tr: st->exits) {
+                if (tr->dest->initial) {
+                    std = false;
+                    break;
+                }
+            }
         }
-
-        //For each transitions, if one is going to an initial state, the FA isn't standard
-        for(Transition* tr: st->exits){
-            if(tr->dest->initial)
-                return true;
-        }
+    } else {
+        std = false;
     }
-    //We have two case now : The FA can be standard or can have no initial state : in both case the FA isn't able to standardisation.
-    if(count == 0)
-        _standard = true;
-    return false;
+    _standard = std;
 
 }
 
@@ -293,8 +302,29 @@ bool FA::isComplete(const bool display = false) const {
         cout << "Is Automaton Complete ? " << boolalpha << _completed << endl;
         if (!_completed) {
             if (!_determinized) {
-                cout << "Automate is simply not determinized. It has to be determinized in order to be complete"
+                cout << "Automate is simply not deterministic. It has to in order to be complete."
                      << endl;
+            } else {
+                bool displayB = false;
+                for (State* st: _states) {
+                    bool emptyTransition = false;
+                    for (char c: _alphabet) {
+                        if (Transition::searchByCharacter(st->exits, c) == nullptr) {
+                            emptyTransition = true;
+                            break;
+                        }
+                    }
+                    if (emptyTransition) {
+                        if (!displayB) {
+                            displayB = true;
+                            cout << "Transition missing at state: ";
+                        }
+                        cout << st->id << " ";
+                    }
+                }
+                if (displayB) {
+                    cout << endl;
+                }
             }
         }
     }

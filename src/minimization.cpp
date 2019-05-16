@@ -45,7 +45,7 @@ FA* FA::minimize()
         return newAuto;
     } else
     {
-        cout << "FA must be Complete and Deterministic" << endl;
+        cout << "FA must be Complete and Deterministic." << endl;
         return nullptr;
     }
 
