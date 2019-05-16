@@ -74,10 +74,6 @@ void addAutomateFromFiles(vector<FA*>* myFA) {
     FA* temp = new FA(myFile);
     myFA->push_back(temp);
     temp->display();
-    temp->isSynchronous(true);
-    temp->isDeterministic(true);
-    temp->isComplete(true);
-    temp->isStandard(true);
 }
 
 FA* pickFA(vector<FA*>* myFA) {

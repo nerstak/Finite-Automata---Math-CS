@@ -116,6 +116,15 @@ void FA::display() const {
 
         cout << endl;
     }
+    isSynchronous(true);
+    cout << endl;
+    isDeterministic(true);
+    cout << endl;
+    isComplete(true);
+    cout << endl;
+    isStandard(true);
+    cout << endl;
+    cout << "Has Automate been minimized? " << boolalpha << _minimized << endl;
     cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
 }
 
@@ -140,7 +149,7 @@ bool FA::isSynchronous(const bool display = false) const {
                 Transition::searchOccurrence(st->exits, EMPTY, emptyClosure);
 
                 if (!emptyClosure.empty()) {
-                    cout << "At state " << st->id << ", transition EMPTY to: ";
+                    cout << "   At state " << st->id << ", transition EMPTY to: ";
                     for (Transition* tr: emptyClosure) {
                         cout << tr->dest->id << " ";
                     }
@@ -171,7 +180,7 @@ static void oneEntry(const vector<State*> &list) {
     vector<State*> init;
     State::recoverSpecials(list, &init, nullptr);
     if (init.size() > 1) {
-        cout << "More than one entry: ";
+        cout << "   More than one entry: ";
         for (State* st: init) {
             cout << st->id << " ";
         }
@@ -188,10 +197,10 @@ static void uniqueTransition(const vector<State*> &list, vector<char> alphabet) 
             Transition::searchOccurrence(st->exits, c, sameCharacter);
             if (sameCharacter.size() > 1) {
                 if (!displayID) {
-                    cout << "At state " << st->id << ", same character of transition for:" << endl;
+                    cout << "   At state " << st->id << ", same character of transition for:" << endl;
                 }
                 displayID = true;
-                cout << "- Character " << c << ", leading to: ";
+                cout << "    - Character " << c << ", leading to: ";
                 for (Transition* tr: sameCharacter) {
                     cout << tr->dest->id << " ";
                 }
@@ -209,7 +218,7 @@ bool FA::isDeterministic(const bool display = false) const {
         cout << "Is Automate Deterministic? " << boolalpha << _determinized << endl;
         if (!_determinized) {
             if (!_synchronous) {
-                cout << "Automate is not Synchronous" << endl;
+                cout << "   Automate is not Synchronous" << endl;
             }
 
             // Checking if there is only one entry
@@ -229,13 +238,15 @@ bool FA::isStandard(const bool display = false) const {
             vector<State*>* initials = new vector<State*>;
             State::recoverSpecials(_states, initials, nullptr);
             if (initials->size() != 1) {
-                cout << "There should be only one initial state" << endl;
+                cout << "   There should be one initial state. Actual initial states: ";
+                for (State* st: *initials) cout << st->id << " ";
+                cout << endl;
             } else {
                 for (State* st: _states) {
                     for (Transition* tr: st->exits) {
                         if (tr->dest == (*initials)[0]) {
-                            cout << "Transition leading to initial State" << endl;
-                            break;
+                            cout << "   At State " << st->id << ", Transition '" << tr->trans
+                                 << "' leading to initial State" << endl;
                         }
                     }
                 }
@@ -302,10 +313,10 @@ void FA::sort() {
 
 bool FA::isComplete(const bool display = false) const {
     if (display) {
-        cout << "Is Automaton Complete ? " << boolalpha << _completed << endl;
+        cout << "Is Automaton Complete? " << boolalpha << _completed << endl;
         if (!_completed) {
             if (!_determinized) {
-                cout << "Automate is simply not deterministic. It has to in order to be complete."
+                cout << "   Automate is simply not deterministic. It has to in order to be complete."
                      << endl;
             } else {
                 bool displayB = false;
@@ -314,13 +325,12 @@ bool FA::isComplete(const bool display = false) const {
                     for (char c: _alphabet) {
                         if (Transition::searchByCharacter(st->exits, c) == nullptr) {
                             emptyTransition = true;
-                            break;
                         }
                     }
                     if (emptyTransition) {
                         if (!displayB) {
                             displayB = true;
-                            cout << "Transition missing at state: ";
+                            cout << "   Transition missing at state: ";
                         }
                         cout << st->id << " ";
                     }
