@@ -61,8 +61,15 @@ public:
     /// \return bool
     bool isDeterministic(bool display) const;
 
-    /// Says to the user if the automate is complete
+    /// Check if an automate is complete
+    /// \param display Display result and explanation if true (false by default)
+    /// \return bool
     bool isComplete(const bool display) const;
+
+    /// Check if an automate is standard
+    /// \param display Display result and explanation if true (false by default)
+    /// \return bool
+    bool isStandard(const bool display) const;
 
     FA* minimize();
 
@@ -85,6 +92,8 @@ public:
 
     /// Run every checkX
     void runTest();
+
+    std::string getName();
 
 private:
     /// Clean the alphabet and the list of states

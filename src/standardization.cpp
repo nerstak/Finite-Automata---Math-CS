@@ -4,8 +4,8 @@
 FA* FA::standardize() {
 
     //First, check if the Automata isn't already standard, in order to not create new state.
-    if(!this->checkStandard()){
-        cout << "Unable to standardization." << endl;
+    if (_standard) {
+        cout << "Already standardization." << endl;
         return this;
     }
 
@@ -38,6 +38,7 @@ FA* FA::standardize() {
 
     // We add our new and unique initial state to our states.
     newFA->_states.push_back(newIni);
+    newFA->_standard = true;
     return newFA;
 
 }

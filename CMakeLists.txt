@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12) # Version for CMake
+cmake_minimum_required(VERSION 3.6) # Version for CMake
 project(Finite_Automata___Math_CS) # Project name
 
 #List of files
@@ -27,7 +27,7 @@ set(HDR
         src/State.h
         src/reading.h
         src/minimization.h
-        src/Transition.h)
+        src/Transition.h src/mainLoop.cpp src/mainLoop.h)
 
 set(CMAKE_CXX_STANDARD 17) # Version of C++
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../) # Output in root folder

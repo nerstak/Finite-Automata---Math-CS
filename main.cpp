@@ -1,9 +1,11 @@
 #include <iostream>
 #include "src/FA.h"
 #include "src/files.h"
+#include "src/mainLoop.h"
 
 int main() {
-    string lmao = "automata/L2Int1-7-36.txt";
+    mainLoop();
+ /*   string lmao = "automata/L2Int1-7-36.txt";
     FA fa(lmao);
     fa.display();
     FA* fx = fa.determinize();
@@ -12,7 +14,7 @@ int main() {
     fx->display();
     fg->display();
     fg->complementarize()->display();
-    fg->minimize()->display();
+    fg->minimize()->display();*/
 
    /**
     string Yoo="automata/test/test4.txt";
