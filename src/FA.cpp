@@ -124,7 +124,7 @@ void FA::display() const {
     cout << endl;
     isStandard(true);
     cout << endl;
-    cout << "Has Automate been minimized? " << boolalpha << _minimized << endl;
+    cout << "Is automate minimal? " << boolalpha << _minimized << endl;
     cout << " - - - - - - - - - - - - - - - - - - - - - " << endl << endl;
 }
 
@@ -139,7 +139,7 @@ extern string concatenateID(vector<State*> sameStates) {
 }
 
 
-bool FA::isSynchronous(const bool display = false) const {
+bool FA::isSynchronous(const bool display) const {
     if (display) {
         cout << "Is Automate Synchronous? " << boolalpha << _synchronous << endl;
         if (!_synchronous) {
@@ -207,13 +207,10 @@ static void uniqueTransition(const vector<State*> &list, vector<char> alphabet) 
                 cout << endl;
             }
         }
-        if (displayID) {
-            cout << endl;
-        }
     }
 }
 
-bool FA::isDeterministic(const bool display = false) const {
+bool FA::isDeterministic(const bool display) const {
     if (display) {
         cout << "Is Automate Deterministic? " << boolalpha << _determinized << endl;
         if (!_determinized) {
@@ -231,7 +228,7 @@ bool FA::isDeterministic(const bool display = false) const {
     return _determinized;
 }
 
-bool FA::isStandard(const bool display = false) const {
+bool FA::isStandard(const bool display) const {
     if (display) {
         cout << "Is Automate Standard? " << boolalpha << _standard << endl;
         if (!_standard) {
@@ -311,7 +308,7 @@ void FA::sort() {
     }
 }
 
-bool FA::isComplete(const bool display = false) const {
+bool FA::isComplete(const bool display) const {
     if (display) {
         cout << "Is Automaton Complete? " << boolalpha << _completed << endl;
         if (!_completed) {
@@ -363,11 +360,19 @@ void FA::checkComplete() {
     _completed = comp;
 }
 
+bool FA::checkMinimal() {
+    auto tmp = minimize(false);
+    if (tmp) {
+        delete (tmp);
+    }
+}
+
 void FA::runTest() {
     checkSynchronous();
     checkDeterministic();
     checkComplete();
     checkStandard();
+    checkMinimal();
 }
 
 std::string FA::getName() {

@@ -54,24 +54,24 @@ public:
     /// Check if an automate is synchronous
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isSynchronous(bool display) const;
+    bool isSynchronous(const bool display = false) const;
 
     /// Check if an automate is deterministic
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isDeterministic(bool display) const;
+    bool isDeterministic(const bool display = false) const;
 
     /// Check if an automate is complete
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isComplete(const bool display) const;
+    bool isComplete(const bool display = false) const;
 
     /// Check if an automate is standard
     /// \param display Display result and explanation if true (false by default)
     /// \return bool
-    bool isStandard(const bool display) const;
+    bool isStandard(const bool display = false) const;
 
-    FA* minimize();
+    FA* minimize(const bool displayT = true);
 
     ///Standardize an FA
     /// \return Adress of the standard FA.
@@ -120,11 +120,15 @@ private:
     ///Check if the automate is complete or not. Should be used after every change in the automate
     void checkComplete();
 
+    /// Check if the automate is standard or not. Should be used after every change in the automate
+    bool checkStandard();
+
+    /// Check if the automate is minimal or not. Should be used after every change in the automate
+    bool checkMinimal();
+
     /// Sort transitions and states. It leads to a better display
     void sort();
 
-    /// Check if the automate is standard or not.
-    bool checkStandard();
 };
 
 /// Generate an ID from a list of states

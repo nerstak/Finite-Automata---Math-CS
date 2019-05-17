@@ -162,6 +162,7 @@ void completationAndAdd(FA* currentFA, vector<FA*>* myFA) {
         if (temp == nullptr)
             cout << "Can't complete : the FA needs to be Deterministic." << endl;
         else {
+            temp->display();
             myFA->push_back(temp);
             cout << "Successful Completion!" << endl;
         }
@@ -176,7 +177,9 @@ void determinizeAndAdd(FA* currentFA, vector<FA*>* myFA) {
     } else {
         FA* temp;
         temp = currentFA->determinize();
+        temp->display();
         myFA->push_back(temp);
+        cout << "Successful Determinisation!" << endl;
     }
 }
 
@@ -186,7 +189,9 @@ void standardizeAndAdd(FA* currentFA, vector<FA*>* myFA) {
     } else {
         FA* temp;
         temp = currentFA->standardize();
+        temp->display();
         myFA->push_back(temp);
+        cout << "Successful Standardisation!" << endl;
     }
 }
 
@@ -194,16 +199,22 @@ void minimizeAndAdd(FA* currentFA, vector<FA*>* myFA) {
     separation();
     FA* temp;
     temp = currentFA->minimize();
-    if (temp != nullptr)
+    if (temp != nullptr) {
+        temp->display();
         myFA->push_back(temp);
+        cout << "Successful Minimisation!" << endl;
+    }
 }
 
 void ComplementarizationAndAdd(FA* currentFA, vector<FA*>* myFA) {
     separation();
     FA* temp;
     temp = currentFA->complementarize();
-    if (temp != nullptr)
+    if (temp != nullptr) {
+        temp->display();
         myFA->push_back(temp);
+        cout << "Successful Completion!" << endl;
+    }
     else
         cout << "Operation not possible: the FA needs to be Complete." << endl;
 }
@@ -212,6 +223,7 @@ void wordReco(vector<FA*>* myFA) {
     separation();
     FA* temp = pickFA(myFA);
     if (temp != nullptr) {
+        temp->display();
         string myWord;
         do {
             cout << "Write a word ('exit' to exit): ";

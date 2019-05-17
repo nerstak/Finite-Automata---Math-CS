@@ -1,7 +1,7 @@
 #include "minimization.h"
 
 
-FA *FA::minimize()
+FA* FA::minimize(const bool displayT)
 {
     if (_completed && _determinized)
     {
@@ -28,8 +28,10 @@ FA *FA::minimize()
             P->push_back(Finals);
         }
 
-        display();
-        displayPartition(P, 0, _alphabet);
+        if (displayT) {
+            display();
+            displayPartition(P, 0, _alphabet);
+        }
 
         P = partitioning(P, _alphabet, 1);
 
@@ -40,8 +42,11 @@ FA *FA::minimize()
         newAuto->_correspondence << endl << "Table of Correspondence of " << _name << " to " << newAuto->_name << ":"
                                  << endl << endl;
         newAuto->_states = *Partition2States(P, _alphabet, newAuto->_correspondence);
-        if (newAuto->_states.size() == _states.size())
-            cout << "FA " << _name << "is already minimal" << endl;
+        if (newAuto->_states.size() == _states.size()) {
+            if (displayT) cout << "FA " << _name << "is already minimal" << endl;
+            _minimized = true;
+        }
+
         deletePartition(P);
         newAuto->_alphabet = _alphabet;
         newAuto->_completed = true;
@@ -53,7 +58,7 @@ FA *FA::minimize()
         return newAuto;
     } else
     {
-        cout << "FA must be Complete and Deterministic." << endl;
+        if (displayT) cout << "FA must be Complete and Deterministic." << endl;
         return nullptr;
     }
 
