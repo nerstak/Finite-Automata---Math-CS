@@ -8,6 +8,11 @@ FA* FA::standardize() {
         cout << "Already standardization." << endl;
         return this;
     }
+    else if(checkStandard()){
+        _standard= true;
+        cout << "Already standardization." << endl;
+        return this;
+    }
 
     //Initialization of our new FA
     FA* newFA = new FA(*this);

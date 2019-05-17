@@ -3,18 +3,16 @@
 #include "completion.h"
 
 FA* FA::completion() {
-    // Check if fa is deterministic, to make the completion
-    if (_determinized && !_completed) {
+    // Normally we only complete Deterministic FA, but since it is technically possible to comple a NDFA, we allow it
+    if (!_completed) {
         FA* newFA = new FA(*this); // Creates a new FA that will be complete
         completionProcess(newFA->_states, newFA->_alphabet); // Makes the completion
         newFA->sort();
         newFA->_completed = true;
         newFA->_name = _name + " Complete";
         return newFA;
-    } else if (_completed) {
-        return this;
     } else {
-        return nullptr;
+        return this;
     }
 
 }
