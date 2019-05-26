@@ -19,7 +19,11 @@ FA* FA::completion() {
 
 static void completionProcess(vector<State*> &list, const vector<char> &alphabet) {
     State* P = new State; //Declaration of a new state "P"
-    P->id = to_string(list.size());
+    int i = 0;
+    while (State::searchById(list, to_string(list.size() + i)) != nullptr) {
+        i++;
+    }
+    P->id = to_string(list.size() + i);
 
 
     // Declaration of "isPUsed" that will check if the state "P" has been used in this process.

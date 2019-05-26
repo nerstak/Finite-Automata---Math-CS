@@ -19,7 +19,11 @@ FA* FA::standardize() {
     newFA->_name = _name + " Standardized";
     State* newIni = new State;
     newIni->initial = true;
-    newIni->id = to_string(newFA->_states.size() + 1);
+    int i = 0;
+    while (State::searchById(_states, to_string(_states.size() + i)) != nullptr) {
+        i++;
+    }
+    newIni->id = to_string(newFA->_states.size() + i);
 
     //We will go into all the initial states
     for(State* st: newFA->_states){
